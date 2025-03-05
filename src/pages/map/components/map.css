@@ -1,0 +1,63 @@
+/* Add these styles for both map and individual regions */
+.qarabag {
+  fill: #D4AF37; /* Golden color for Qarabag */
+}
+
+.region-path {
+  fill: #2A534F; /* Default color for regions */
+  transition: fill 0.3s ease;
+}
+
+.region-path:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+path:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* Add these styles for custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2A534F;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1F3E3A;
+}
+
+/* Add these styles for dropdown animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.absolute {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Add this to your existing styles */
+path {
+  transition: opacity 0.3s ease;
+}
+
+.hover\:opacity-50:hover {
+  opacity: 0.5 !important; /* Override inline opacity when hovering */
+}
