@@ -17,29 +17,28 @@ export const Blog = () => {
     const fetchBlogData = async () => {
       try {
         setLoading(true);
+        setError(null);
+        
         const response = await fetch(`${base_url}/pages/${slug}`);
         
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error("Page not found");
+            navigate('/404');
+            return;
           }
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        if (!data || !data.blogs || data.blogs.length === 0) {
-          throw new Error("No blog data found");
+        if (!data || !data.blogs || !data.blogs[0]) {
+          throw new Error('Invalid blog data structure');
         }
-        
+
         setBlogData(data);
-        setError(null);
       } catch (error) {
-        console.error("Error fetching blog:", error);
+        console.error('Error fetching blog data:', error);
         setError(error.message);
-        // Only navigate to 404 for specific errors
-        if (error.message === "Page not found") {
-          navigate("/404");
-        }
+        navigate('/404');
       } finally {
         setLoading(false);
       }
@@ -58,34 +57,25 @@ export const Blog = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-[50vh] flex-col gap-4">
-        <p className="text-red-500">Error: {error}</p>
-        <button 
-          onClick={() => navigate("/")}
-          className="bg-[#2A534F] text-white px-4 py-2 rounded"
-        >
-          Return to Home
-        </button>
-      </div>
-    );
-  }
-
-  if (!blogData) {
+  if (error || !blogData) {
     return null;
   }
 
   return (
     <div className="flex flex-col min-h-[700px] w-full">
       <div className="blog_header w-full mobile:pt-[0px] mobile:pb-[64px] mobile:px-[16px] lg:px-[170px] lg:py-[100px] bg-[rgb(42,83,79)]">
-        <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
+        <h1 className="mobile:text-[32px] lg:text-[61px] font-bold  text-[rgb(255,255,255)]">
           {blogData?.title[language]}
         </h1>
+        {/* <img
+          src={BG_IMAGE}
+          alt=""
+          className="absolut right-0 w-full h-full object-contain"
+        /> */}
       </div>
 
       <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row xl:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
-        <div className="flex flex-col mobile:gap-y-[16px] lg:gap-y-[60px] mobile:w-full sm:w-[540px]">
+        <div className="flex flex-col mobile:gap-y-[16px] lg:gap-y-[60px] mobile:w-full  sm:w-[540px]">
           <h3 className="mobile:px-[32px] mobile:py-[16px] px-[50px] py-[20px] text-white w-fit font-bold mobile:text-[24px] lg:text-[30px] bg-[#886B1F] rounded-tl-[26px] rounded-br-[26px]">
             {blogData?.blogs[0]?.blog_title[language]}
           </h3>
@@ -96,7 +86,7 @@ export const Blog = () => {
                 blogData?.blogs[0]?.blog_description[language] || ""
               ),
             }}
-          />
+          ></p>
           {blogData?.blogs[0]?.blog_link_url[language] && (
             <a
               href={blogData?.blogs[0]?.blog_link_url[language]}
@@ -107,20 +97,20 @@ export const Blog = () => {
             </a>
           )}
         </div>
-        <div className="flex mobile:w-full sm:w-[540px] h-[248px] p-[8px] border border-[rgb(150,125,46)] relative rounded-tl-[32px] rounded-br-[32px]">
-          <div className="w-full h-full rounded-tl-[26px] rounded-br-[26px]">
+        <div className="flex mobile:w-full  sm:w-[540px] h-[248px] p-[8px] border border-[rgb(150,125,46)] relative rounded-tl-[32px] rounded-br-[32px]">
+          <div className="w-full h-full  rounded-tl-[26px] rounded-br-[26px]">
             <img
               src={`${img_url}${blogData?.blogs[0].blog_img}`}
               alt=""
               className="w-full h-full object-cover rounded-tl-[32px] rounded-br-[32px]"
             />
           </div>
-          <div className="absolute mobile:w-[64px] mobile:h-[64px] lg:w-[120px] lg:h-[120px] rounded-full sm:top-[-42px] bg-white sm:left-[20px] mobile:left-[50%] mobile:top-[-35px] border border-[rgb(150,125,46)] z-[100] translate-x-[-50%] flex items-center justify-center">
-            <img
-              src={`${img_url}${blogData?.blogs[0].blog_icon}`}
-              alt=""
-              className="mobile:w-[40px] mobile:h-[36px] lg:w-[60px] lg:h-[60px] object-cover"
-            />
+          <div className="absolute mobile:w-[64px] mobile:h-[64px] lg:w-[120px] lg:h-[120px] rounded-full sm:top-[-42px] bg-white sm:left-[20px] mobile:left-[50%] mobile:top-[-35px]  border border-[rgb(150,125,46)] z-[100]  translate-x-[-50%] flex items-center justify-center">
+              <img
+                src={`${img_url}${blogData?.blogs[0].blog_icon}`}
+                alt=""
+                className="mobile:w-[40px] mobile:h-[36px] lg:w-[60px] lg:h-[60px] object-cover"
+              />
           </div>
         </div>
       </div>

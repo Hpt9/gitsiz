@@ -10,28 +10,31 @@ import { MapPage } from './pages/map'
 import { SignIn } from './pages/signIn/SignIn'
 import { SignUp } from './pages/signUp/SignUp'
 import { Profile } from './pages/profile/profile'
+import ErrorBoundary from './components/ErrorBoundary'
 localStorage.removeItem('language-storage');
 
 function App() {
   return (
-    <div>
-      <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/:slug" element={<Blog />} />
-          <Route path="/elaqe" element={<Contact />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/qanunvericilik" element={<Legislation />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/kob-klaster-xeritesi" element={<MapPage/>} />
-          <Route path="/daxil-ol" element={<SignIn />} />
-          <Route path="/qeydiyyat" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-    </div>
+    <ErrorBoundary>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="/elaqe" element={<Contact />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/qanunvericilik" element={<Legislation />} />
+              <Route path="/kob-klaster-xeritesi" element={<MapPage/>} />
+              <Route path="/daxil-ol" element={<SignIn />} />
+              <Route path="/qeydiyyat" element={<SignUp />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/:slug" element={<Blog />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ErrorBoundary>
   )
 }
 
