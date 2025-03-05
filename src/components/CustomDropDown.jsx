@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function CustomDropDown({ name, options, isLanguage = false }) {
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative inline-block text-left bottom-[1px]">
       {({ open }) => (
         <>
           <div>
