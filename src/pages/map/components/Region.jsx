@@ -157,6 +157,18 @@ export const Region = ({ regionData, element, setIsRegion }) => {
       });
   };
 
+  const handleClusterChange = (clusterId) => {
+    setSelectedClusters(prev => 
+      prev.includes(clusterId) 
+        ? prev.filter(id => id !== clusterId)
+        : [...prev, clusterId]
+    );
+  };
+
+  const handleMethodChange = (methodId) => {
+    setSelectedMethod(methodId);
+  };
+
   return (
     <div className="flex flex-col gap-y-[20px] w-full max-w-[1920px]">
       {/* Back Button - Absolute positioned on mobile */}
