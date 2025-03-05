@@ -5,6 +5,10 @@ import "./map.css"; // Make sure to import the CSS
 import React, { useState, useEffect } from 'react';
 
 export const Region = ({ regionData, element, setIsRegion }) => {
+  if (!regionData || !regionData[0]) {
+    return <div>Loading...</div>;
+  }
+  
   // console.log('Region Component Data:', regionData);
   
   const [isClusterOpen, setIsClusterOpen] = useState(false);
@@ -28,6 +32,45 @@ export const Region = ({ regionData, element, setIsRegion }) => {
     'lankaran-astara': '#264A43',
     'absheron-xizi': '#22423E'
   };
+
+  // Get unique methods from regionData
+  const getAvailableMethods = () => {
+    if (!regionData) return [];
+    
+    const uniqueMethods = new Set();
+    regionData.forEach(item => {
+      const method = item.method[0];
+      uniqueMethods.add(JSON.stringify({
+        id: method.id,
+        name: method.name.az
+      }));
+    });
+    return Array.from(uniqueMethods).map(m => JSON.parse(m));
+  };
+
+  // Get the available methods
+  const availableMethods = getAvailableMethods();
+
+  // Get unique clusters from regionData based on selected method
+  const getAvailableClusters = () => {
+    if (!regionData) return [];
+    
+    const uniqueClusters = new Set();
+    regionData.forEach(item => {
+      // Only include clusters that match the selected method
+      if (!selectedMethod || item.method[0].id === selectedMethod) {
+        const cluster = item.cluster[0];
+        uniqueClusters.add(JSON.stringify({
+          id: cluster.id,
+          name: cluster.name.az
+        }));
+      }
+    });
+    return Array.from(uniqueClusters).map(c => JSON.parse(c));
+  };
+
+  // Get the available clusters
+  const availableClusters = getAvailableClusters();
 
   // First useEffect - for setting initial method
   useEffect(() => {
@@ -57,54 +100,6 @@ export const Region = ({ regionData, element, setIsRegion }) => {
   // console.log(regionData[0].economical_zone[0].name['az']);
   if (!selectedRegion) return null;
   // console.log(regionData)
-  // Get unique clusters from regionData based on selected method
-  const getAvailableClusters = () => {
-    if (!regionData) return [];
-    
-    const uniqueClusters = new Set();
-    regionData.forEach(item => {
-      // Only include clusters that match the selected method
-      if (!selectedMethod || item.method[0].id === selectedMethod) {
-        const cluster = item.cluster[0];
-        uniqueClusters.add(JSON.stringify({
-          id: cluster.id,
-          name: cluster.name.az
-        }));
-      }
-    });
-    return Array.from(uniqueClusters).map(c => JSON.parse(c));
-  };
-
-  // Get unique methods from regionData
-  const getAvailableMethods = () => {
-    if (!regionData) return [];
-    
-    const uniqueMethods = new Set();
-    regionData.forEach(item => {
-      const method = item.method[0];
-      uniqueMethods.add(JSON.stringify({
-        id: method.id,
-        name: method.name.az
-      }));
-    });
-    return Array.from(uniqueMethods).map(m => JSON.parse(m));
-  };
-
-  const handleClusterChange = (clusterId) => {
-    setSelectedClusters(prev => 
-      prev.includes(clusterId) 
-        ? prev.filter(id => id !== clusterId)
-        : [...prev, clusterId]
-    );
-  };
-
-  const handleMethodChange = (methodId) => {
-    setSelectedMethod(methodId);
-  };
-
-  // Get the available clusters and methods
-  const availableClusters = getAvailableClusters();
-  const availableMethods = getAvailableMethods();
 
   // Helper function to recursively modify SVG elements
   const modifyChildren = (element) => {
