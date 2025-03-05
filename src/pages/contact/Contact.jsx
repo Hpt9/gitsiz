@@ -27,7 +27,7 @@ export const Contact = () => {
       } catch (error) {
         console.error('Error fetching settings:', error);
       } finally {
-        console.log(settings);
+        //console.log(settings);
         setLoading(false);
       }
     };
@@ -37,7 +37,7 @@ export const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
+    //console.log(formData)
     // Check if all fields are filled
     if (!formData.full_name || !formData.email || !formData.phone || !formData.message) {
       toast.error('Bütün sahələri doldurun!', {

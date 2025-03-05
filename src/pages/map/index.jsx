@@ -27,7 +27,7 @@ export const MapPage = () => {
         });
         const data = await response.json();
         setAllData(data);
-        console.log(data);
+        //console.log(data);
       } catch (error) {
         console.error('Error fetching initial data:', error);
       } finally {

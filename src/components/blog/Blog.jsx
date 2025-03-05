@@ -23,7 +23,7 @@ export const Blog = () => {
         
         if (!response.ok) {
           if (response.status === 404) {
-            navigate('/404');
+            navigate('*');
             return;
           }
           throw new Error(`HTTP error! status: ${response.status}`);

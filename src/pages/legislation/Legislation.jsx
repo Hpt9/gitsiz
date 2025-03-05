@@ -15,7 +15,7 @@ export const Legislation = () => {
       try {
         setIsLoading(true);
         const response = await axios.get(`${base_url}/legislation`);
-        console.log(response.data);
+        //console.log(response.data);
         setLegislationData(response.data);
       } catch (error) {
         console.error("Error fetching home data:", error);

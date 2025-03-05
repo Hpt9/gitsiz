@@ -17,7 +17,7 @@ export const Faq = () => {
           throw new Error("Post not found");
         }
         const data = await response.json();
-        console.log(data[0].question);
+        //console.log(data[0].question);
         setFaqData(data);
       } catch (error) {
         console.log(error);

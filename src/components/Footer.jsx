@@ -35,7 +35,7 @@ export const Footer = () => {
               link: child.url,
             }));
 
-          console.log(`Menu ${column.order} children:`, children); // Debug log
+          //console.log(`Menu ${column.order} children:`, children); // Debug log
 
           return {
             [`menu${column.order}`]: children,
@@ -65,7 +65,7 @@ export const Footer = () => {
       <div className="lg:flex mobile:hidden lg:flex-row w-full h-[113px] relative z-[20] justify-center gap-x-[140px]">
         {footerMenus.map((menu, index) => {
           const menuKey = Object.keys(menu)[0];
-          console.log(menuKey);
+          //console.log(menuKey);
           if (menuKey !== "menu3") {
             return (
               <div className="flex flex-col " key={index}>
