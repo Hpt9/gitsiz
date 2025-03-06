@@ -200,6 +200,6 @@
 .faq_accordion_panel{
   font-size: 16px !important;
 }
-#accordion-panel-\:rd\: > p > span{
+.faq_accordion_panel  span{
   font-size: 16px !important;
 }
