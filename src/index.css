@@ -195,3 +195,11 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #876f29;
 }
+
+
+.faq_accordion_panel{
+  font-size: 16px !important;
+}
+#accordion-panel-\:rd\: > p > span{
+  font-size: 16px !important;
+}
