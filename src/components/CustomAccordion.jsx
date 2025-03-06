@@ -25,7 +25,7 @@ export const CustomAccordion = ({ title, content }) => {
                 <ChevronDownIcon className={`w-[24px] h-[24px]`}  style={{transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)"}}/>
               </AccordionButton>
             </h2>
-            <AccordionPanel className="mobile:w-full lg:w-[625px] mobile:text-[12px] pl-[16px] pb-[16px] lg:text-[20px] text-[#2A534F]"
+            <AccordionPanel className="mobile:w-full lg:w-[625px] mobile:text-[12px] lg:text-[16px] pl-[16px] pb-[16px] lg:text-[20px] text-[#2A534F]"
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
             style={{borderBottom: !isExpanded ? "none" : "1px solid rgba(112,112,112,1)"}}
             >

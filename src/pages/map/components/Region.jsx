@@ -166,6 +166,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
   };
 
   const handleMethodChange = (methodId) => {
+    console.log(methodId)
     setSelectedMethod(methodId);
   };
 
@@ -284,7 +285,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                         Məhsul qrupu
                       </th>
                       <th className="text-left mobile:text-[12px] lg:text-sm font-medium text-white bg-[#2A534F] w-[50%] py-[10px] pl-[16px] pr-[16px]">
-                        Məhsul
+                        {selectedMethod===2 ? 'Məhsul' : 'Qeyd'}
                       </th>
                     </tr>
                   </thead>
