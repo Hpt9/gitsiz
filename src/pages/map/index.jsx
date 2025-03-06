@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { MapSVG } from "./components/mapSVG";
 import { Region } from "./components/Region";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { updatePageTitle } from '../../utils/updatePageTitle';
 export const MapPage = () => {
+  useEffect(() => {
+    updatePageTitle('Klaster xəritəsi');
+  }, []);
   const [isRegion, setIsRegion] = useState(false);
   const [element, setElement] = useState("");
   const [loading, setLoading] = useState(true);

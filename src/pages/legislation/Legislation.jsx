@@ -5,8 +5,11 @@ import { base_url } from "../../components/expoted_images";
 import DOMPurify from "dompurify";
 import useLanguageStore from "../../store/languageStore";
 import { img_url } from "../../components/expoted_images";
-
+import { updatePageTitle } from '../../utils/updatePageTitle';
 export const Legislation = () => {
+  useEffect(() => {
+    updatePageTitle('Qanunvericilik');
+  }, []);
   const { language } = useLanguageStore();
   const [legislationData, setLegislationData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

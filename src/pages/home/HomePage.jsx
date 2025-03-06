@@ -5,8 +5,11 @@ import DOMPurify from 'dompurify';
 import useLanguageStore from '../../store/languageStore';
 import { img_url } from "../../components/expoted_images";
 import { useNavigate } from 'react-router-dom';
-
+import { updatePageTitle } from '../../utils/updatePageTitle';
 export const HomePage = () => {
+  useEffect(() => {
+    updatePageTitle('Ana səhifə');
+  }, []);
   const { language } = useLanguageStore();
   const [homeData, setHomeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

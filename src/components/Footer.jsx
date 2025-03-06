@@ -6,6 +6,7 @@ import KOB from "../assets/koblogo.svg";
 import PASHA from "../assets/pashalogo.svg";
 import useLanguageStore from "../store/languageStore";
 import ik from "../assets/Group 164.svg";
+import MTTM from "../assets/mttm.svg";
 import { FaArrowDown } from "react-icons/fa6";
 
 export const Footer = () => {
@@ -179,6 +180,7 @@ export const Footer = () => {
       </div>
       <div className="flex items-center justify-center gap-x-[100px]">
         <div className="footer_icons gap-x-[16px]  items-center justify-center relative z-[20] mobile:hidden lg:flex">
+          <img src={MTTM} alt="" className="" />
           <img src={ik} alt="" className="w-[78px] h-[16px]" />
           <img src={KOB} alt="" className="w-[34px] h-[42px]" />
           <img src={PASHA} alt="" className="w-[50px] h-[18px]" />

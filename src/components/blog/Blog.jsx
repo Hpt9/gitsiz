@@ -4,7 +4,7 @@ import DOMPurify from "dompurify";
 import { base_url, img_url } from "../../components/expoted_images";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import useLanguageStore from '../../store/languageStore';
-
+import { updatePageTitle } from '../../utils/updatePageTitle';
 export const Blog = () => {
   const { language } = useLanguageStore();
   const { slug } = useParams();
@@ -43,12 +43,15 @@ export const Blog = () => {
         setLoading(false);
       }
     };
-
+    
     if (slug) {
       fetchBlogData();
     }
   }, [slug, navigate]);
 
+  useEffect(() => {
+    updatePageTitle(`${blogData?.blogs[0]?.blog_title[language]}`);
+  }, [blogData,language]);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
@@ -56,11 +59,11 @@ export const Blog = () => {
       </div>
     );
   }
-
+  
   if (error || !blogData) {
     return null;
   }
-
+  
   return (
     <div className="flex flex-col min-h-[700px] w-full">
       <div className="blog_header w-full mobile:pt-[0px] mobile:pb-[64px] mobile:px-[16px] lg:px-[170px] lg:py-[100px] bg-[rgb(42,83,79)]">

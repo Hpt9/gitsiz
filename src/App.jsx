@@ -7,9 +7,9 @@ import { Faq } from './pages/faq/Faq'
 import { Legislation } from './pages/legislation/Legislation'
 import { NotFound } from './pages/NotFound'
 import { MapPage } from './pages/map'
-import { SignIn } from './pages/signIn/SignIn'
-import { SignUp } from './pages/signUp/SignUp'
-import { Profile } from './pages/profile/profile'
+// import { SignIn } from './pages/signIn/SignIn'
+// import { SignUp } from './pages/signUp/SignUp'
+// import { Profile } from './pages/profile/profile'
 import ErrorBoundary from './components/ErrorBoundary'
 localStorage.removeItem('language-storage');
 
@@ -25,9 +25,9 @@ function App() {
               <Route path="/faq" element={<Faq />} />
               <Route path="/qanunvericilik" element={<Legislation />} />
               <Route path="/kob-klaster-xeritesi" element={<MapPage/>} />
-              <Route path="/daxil-ol" element={<SignIn />} />
-              <Route path="/qeydiyyat" element={<SignUp />} />
-              <Route path="/profile" element={<Profile />} />
+              {/* <Route path="/daxil-ol" element={<SignIn />} /> */}
+              {/* <Route path="/qeydiyyat" element={<SignUp />} /> */}
+              {/* <Route path="/profile" element={<Profile />} /> */}
               <Route path="/:slug" element={<Blog />} />
               <Route path="*" element={<NotFound />} />
             </Route>
