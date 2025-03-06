@@ -9,7 +9,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import DOMPurify from "dompurify";
 import PropTypes from 'prop-types';
 
-export const CustomAccordion = ({ title, content }) => {
+export const CustomAccordion = ({ title, content, index }) => {
   return (
     <Accordion allowMultiple className="mobile:w-full lg:w-[500px] xl:w-[625px]">
       <AccordionItem>
@@ -20,7 +20,7 @@ export const CustomAccordion = ({ title, content }) => {
               style={{borderBottom: isExpanded ? "none" : "1px solid rgba(112,112,112,1)"}}
               >
                 <Box as="span" textAlign="left" className="mobile:text-[14px] lg:text-[20px] text-[#2A534F]">
-                  {title}
+                  {index+1}. {title}
                 </Box>                               
                 <ChevronDownIcon className={`w-[24px] h-[24px]`}  style={{transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)"}}/>
               </AccordionButton>
@@ -40,5 +40,6 @@ export const CustomAccordion = ({ title, content }) => {
 
 CustomAccordion.propTypes = {
   title: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired
+  content: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired
 };
