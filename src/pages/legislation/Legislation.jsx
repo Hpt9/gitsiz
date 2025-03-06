@@ -61,7 +61,7 @@ export const Legislation = () => {
               {legislationData.contents[0].title[language]}
             </h3>
             <p
-              className="mobile:text-[14px] mobile:leading-5 lg:text-[20px] text-[rgb(43,82,79)] mobile:w-full lg:w-[538px]"
+              className="mobile:text-[14px] mobile:leading-5 lg:leading-[24px] lg:text-[20px] text-[rgb(43,82,79)] mobile:w-full lg:w-[538px]"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
                   legislationData.contents[0].description[language]
