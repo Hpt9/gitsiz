@@ -54,7 +54,7 @@ export const Faq = () => {
       <div className="flex mobile:justify-end w-full lg:min-h-[600px] mobile:flex-col-reverse lg:flex-row lg:items-center gap-x-[100px] px-[50px] mobile:px-[16px] mobile:py-[32px] lg:justify-center">
         
         <div className="flex flex-col max-h-[228px] overflow-y-auto overflow-x-hidden custom-scrollbar pr-[16px]">
-        {faqData.map((item, index) => (
+        {[...faqData].reverse().map((item, index) => (
           <CustomAccordion key={index} title={item.question[language]} content={item.answer[language]} />
         )) }
         
