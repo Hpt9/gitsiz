@@ -40,7 +40,7 @@ export const Blog = () => {
       } catch (error) {
         console.error('Error fetching blog data:', error);
         setError(error.message);
-        navigate('/404');
+        navigate('*');
       } finally {
         setLoading(false);
       }
@@ -57,12 +57,12 @@ export const Blog = () => {
 
   // Function to check if text is long (more than 60 words)
   const isLongText = (text) => {
-    return text.split(' ').length > 40;
+    return text.split(' ').length > 45;
   };
 
   // Function to get truncated text
   const getTruncatedText = (text) => {
-    return text.split(' ').slice(0, 40).join(' ') + '...';
+    return text.split(' ').slice(0, 45).join(' ') + '...';
   };
 
   if (loading) {
