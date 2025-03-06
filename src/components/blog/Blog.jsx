@@ -57,12 +57,12 @@ export const Blog = () => {
 
   // Function to check if text is long (more than 60 words)
   const isLongText = (text) => {
-    return text.split(' ').length > 60;
+    return text.split(' ').length > 40;
   };
 
   // Function to get truncated text
   const getTruncatedText = (text) => {
-    return text.split(' ').slice(0, 60).join(' ') + '...';
+    return text.split(' ').slice(0, 40).join(' ') + '...';
   };
 
   if (loading) {
