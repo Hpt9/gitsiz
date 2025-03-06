@@ -173,6 +173,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="footer_icons flex gap-x-[16px] w-full items-center justify-center relative z-[20]">
+          <img src={MTTM} alt="" className="" />
           <img src={ik} alt="" className="w-[78px] h-[16px]" />
           <img src={KOB} alt="" className="w-[34px] h-[42px]" />
           <img src={PASHA} alt="" className="w-[50px] h-[18px]" />
