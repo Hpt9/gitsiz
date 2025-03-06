@@ -11,9 +11,27 @@ import { MapPage } from './pages/map'
 // import { SignUp } from './pages/signUp/SignUp'
 // import { Profile } from './pages/profile/profile'
 import ErrorBoundary from './components/ErrorBoundary'
+import { useEffect } from 'react'
 localStorage.removeItem('language-storage');
 
 function App() {
+  useEffect(() => {
+    let lastWidth = window.innerWidth;
+    const breakpoint = 1024;
+
+    const handleResize = () => {
+      const currentWidth = window.innerWidth;
+      if ((lastWidth < breakpoint && currentWidth >= breakpoint) || 
+          (lastWidth >= breakpoint && currentWidth < breakpoint)) {
+        window.location.reload();
+      }
+      lastWidth = currentWidth;
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <ErrorBoundary>
       <div>

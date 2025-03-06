@@ -5,6 +5,7 @@ import { base_url, img_url } from "../../components/expoted_images";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import useLanguageStore from '../../store/languageStore';
 import { updatePageTitle } from '../../utils/updatePageTitle';
+
 export const Blog = () => {
   const { language } = useLanguageStore();
   const { slug } = useParams();
@@ -12,6 +13,7 @@ export const Blog = () => {
   const [blogData, setBlogData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchBlogData = async () => {
@@ -52,6 +54,17 @@ export const Blog = () => {
   useEffect(() => {
     updatePageTitle(`${blogData?.blogs[0]?.blog_title[language]}`);
   }, [blogData,language]);
+
+  // Function to check if text is long (more than 60 words)
+  const isLongText = (text) => {
+    return text.split(' ').length > 60;
+  };
+
+  // Function to get truncated text
+  const getTruncatedText = (text) => {
+    return text.split(' ').slice(0, 60).join(' ') + '...';
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
@@ -77,19 +90,29 @@ export const Blog = () => {
         /> */}
       </div>
 
-      <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row xl:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
-        <div className="flex flex-col mobile:gap-y-[16px] lg:gap-y-[60px] mobile:w-full  sm:w-[540px]">
+      <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row lg:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
+        <div className="flex flex-col mobile:w-full  sm:w-[540px]">
           <h3 className="mobile:px-[32px] mobile:py-[16px] px-[50px] py-[20px] text-white w-fit font-bold mobile:text-[24px] lg:text-[30px] bg-[#886B1F] rounded-tl-[26px] rounded-br-[26px]">
             {blogData?.blogs[0]?.blog_title[language]}
           </h3>
           <p
-            className="mobile:text-[14px] lg:text-[18px] text-[rgb(43,82,79)] w-full leading-[20px]"
+            className="mobile:text-[14px] lg:text-[18px] text-[rgb(43,82,79)] w-full leading-[20px] mobile:mt-[16px] lg:mt-[40px]"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
-                blogData?.blogs[0]?.blog_description[language] || ""
+                isLongText(blogData?.blogs[0]?.blog_description[language]) && !isExpanded
+                  ? getTruncatedText(blogData?.blogs[0]?.blog_description[language])
+                  : blogData?.blogs[0]?.blog_description[language] || ""
               ),
             }}
           ></p>
+          {isLongText(blogData?.blogs[0]?.blog_description[language]) && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-[#886B1F] font-semibold hover:underline text-left"
+            >
+              {isExpanded ? 'Daha az' : 'Davamını oxu'}
+            </button>
+          )}
           {blogData?.blogs[0]?.blog_link_url[language] && (
             <a
               href={blogData?.blogs[0]?.blog_link_url[language]}
