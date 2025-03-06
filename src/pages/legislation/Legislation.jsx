@@ -57,7 +57,7 @@ export const Legislation = () => {
       <div className="legislation_body flex flex-col">
         <div className="flex items-center justify-center mobile:flex-col mobile:gap-y-[64px] xl:flex-row xl:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
           <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[60px] mobile:w-full tablet:w-[540px]">
-            <h3 className=" text-[rgb(43,82,79)] w-fit font-bold mobile:text-[24px] lg:text-[50px] tracking-[-1%]">
+            <h3 className=" text-[rgb(43,82,79)] w-fit font-bold mobile:text-[24px] lg:text-[50px] tracking-[-1%] mobile:leading-[32px] lg:leading-[56px]">
               {legislationData.contents[0].title[language]}
             </h3>
             <p
