@@ -116,7 +116,7 @@ export const Blog = () => {
           {blogData?.blogs[0]?.blog_link_url[language] && (
             <a
               href={blogData?.blogs[0]?.blog_link_url[language]}
-              className="bg-[rgba(136,107,31,1)] text-white px-[20px] py-[10px] rounded-full w-fit text-center flex items-center justify-center gap-x-[10px]"
+              className="bg-[rgba(136,107,31,1)] text-white px-[20px] py-[10px] rounded-full w-fit text-center flex items-center justify-center gap-x-[10px] mt-[15px]"
             >
               {blogData?.blogs[0]?.blog_link_text[language]}{" "}
               <MdOutlineDownloadForOffline className="text-[30px]" />
