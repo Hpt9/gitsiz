@@ -134,7 +134,11 @@ export const HomePage = () => {
             })()}
           </div>
         </div>
-        <div className="opportunities mobile:hidden lg:flex flex-col items-center lg:mt-[200px] 2xl:mt-[50px]">
+        <div className="opportunities mobile:hidden lg:flex flex-col items-center  2xl:mt-[50px]"
+          style={{
+            marginTop: isExpanded ? '290px' : '200px'
+          }}
+        >
           <span className="text-[20px] w-[407px] text-center text-[rgb(112,112,112)] relative left-[-43px] ">
             {homeData.advance_title[language]}
           </span>
