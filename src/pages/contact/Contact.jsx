@@ -131,9 +131,9 @@ export const Contact = () => {
                 <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
                   İnstagram
                 </p>
-                <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
+                {/* <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
                   Ünvan
-                </p>
+                </p> */}
               </div>
               <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[18px]">
                 <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
@@ -145,9 +145,9 @@ export const Contact = () => {
                 <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
                   {settings?.İnstagram?.az}
                 </p>
-                <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
+                {/* <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
                   {settings?.Ünvan?.az}
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="logos mb-[24px] mt-[32px] flex gap-x-[25px]">
@@ -219,7 +219,7 @@ export const Contact = () => {
   </svg>
 </a>
 
-              <svg
+              {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20.236"
                 height="20.369"
@@ -233,7 +233,7 @@ export const Contact = () => {
                   fill="#967D2E"
                   fillRule="evenodd"
                 />
-              </svg>
+              </svg> */}
             </div>
           </div>
           <p className="text-[14px] w-[250px] font-bold text-[rgb(43,82,79)]">
