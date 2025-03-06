@@ -166,6 +166,7 @@ export const Contact = () => {
                 />
               </svg>
 
+              <a href="mailto:kob.klaster@gmail.com">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20.903"
@@ -181,6 +182,7 @@ export const Contact = () => {
                   fillRule="evenodd"
                 />
               </svg>
+              </a>
 
               <a href="https://www.instagram.com/kob.klaster/" target="_blank" rel="noopener noreferrer">
   <svg
