@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import useLanguageStore from '../../../store/languageStore';
 export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedClusters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMethods, setSelectedMethods] = useState([]);
-
+  const { language } = useLanguageStore();
   const getAvailableMethods = () => {
     if (!data) return [];
     
@@ -56,7 +56,9 @@ export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedC
         className="bg-[#2A534F] rounded-[4px] shadow-lg px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
       >
         <span className="text-[12px] font-semibold text-[white]">
-          Metod {selectedMethods.length > 0 && `(${selectedMethods.length})`}
+          {language === 'az' ? 'Metod' : 
+           language === 'en' ? 'Method' : 
+           'Метод'}
         </span>
         <svg 
           className={`w-5 h-5 transition-transform text-white ${isOpen ? 'rotate-180' : ''}`} 
@@ -98,7 +100,9 @@ export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedC
                 onClick={handleReset}
                 className="text-gray-500 hover:text-gray-700 text-sm"
               >
-                Sıfırla
+                {language === 'az' ? 'Sıfırla' : 
+                 language === 'en' ? 'Reset' : 
+                 'Сбросить'}
               </button>
             </div>
           )}

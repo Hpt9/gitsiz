@@ -3,8 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import PropTypes from 'prop-types';
 import "./map.css"; // Make sure to import the CSS
 import React, { useState, useEffect } from 'react';
-
+import useLanguageStore from '../../../store/languageStore';
 export const Region = ({ regionData, element, setIsRegion }) => {
+  const { language } = useLanguageStore();
   if (!regionData || !regionData[0]) {
     return <div>Loading...</div>;
   }
@@ -189,7 +190,9 @@ export const Region = ({ regionData, element, setIsRegion }) => {
 
       {/* Title */}
       <p className="text-[#2A534F] text-center mobile:text-[18px] lg:text-[24px] font-bold">
-        {regionData[0].economical_zone[0].name['az']} iqtisadi rayonu üzrə KOB Klasterlər
+        {language === 'az' ? regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonu üzrə KOB Klasterlər' : 
+         language === 'en' ? regionData[0].economical_zone[0].name['az'] + ' economic zone KOB Clusters' : 
+         regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonu üzrə KOB Klasterlər'}
       </p>
 
       {/* Main Content Container */}
@@ -219,7 +222,11 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                 onClick={() => setIsClusterOpen(!isClusterOpen)}
                 className="w-full flex justify-between items-center mobile:p-2 lg:p-3 bg-[#2A534F] text-white rounded"
               >
-                <span className="mobile:text-[14px] lg:text-[16px]">Klaster</span>
+                <span className="mobile:text-[14px] lg:text-[16px]">
+                  {language === 'az' ? 'Klaster' : 
+                   language === 'en' ? 'Cluster' : 
+                   'Кластер'}
+                </span>
                 <svg className={`mobile:w-4 lg:w-5 mobile:h-4 lg:h-5 transition-transform ${isClusterOpen ? 'rotate-180' : ''}`}
                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -248,7 +255,11 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                 onClick={() => setIsMethodOpen(!isMethodOpen)}
                 className="w-full flex justify-between items-center mobile:p-2 lg:p-3 bg-[#2A534F] text-white rounded"
               >
-                <span className="mobile:text-[14px] lg:text-[16px]">Metod</span>
+                <span className="mobile:text-[14px] lg:text-[16px]">
+                  {language === 'az' ? 'Metod' : 
+                   language === 'en' ? 'Method' : 
+                   'Метод'}
+                </span>
                 <svg className={`mobile:w-4 lg:w-5 mobile:h-4 lg:h-5 transition-transform ${isMethodOpen ? 'rotate-180' : ''}`}
                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -282,10 +293,14 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                   <thead>
                     <tr className="w-full">
                       <th className="text-left mobile:text-[12px] lg:text-sm font-medium text-white bg-[#2A534F] w-[50%] py-[10px] pl-[16px] pr-[16px]">
-                        Məhsul qrupu
+                        {language === 'az' ? 'Məhsul qrupu' : 
+                         language === 'en' ? 'Product group' : 
+                         'Группа продукта'}
                       </th>
                       <th className="text-left mobile:text-[12px] lg:text-sm font-medium text-white bg-[#2A534F] w-[50%] py-[10px] pl-[16px] pr-[16px]">
-                        {selectedMethod===2 ? 'Məhsul' : 'Qeyd'}
+                        {language === 'az' ? selectedMethod===2 ? 'Məhsul' : 'Qeyd' : 
+                         language === 'en' ? selectedMethod===2 ? 'Product' : 'Note' : 
+                         selectedMethod===2 ? 'Продукт' : 'Заметка'}
                       </th>
                     </tr>
                   </thead>
@@ -316,13 +331,19 @@ export const Region = ({ regionData, element, setIsRegion }) => {
           <div className="mt-4 text-[#2A534F]">
             <div className="flex flex-col">
               <p className="mobile:text-[12px] lg:text-[14px]">
-                Əhalinin sayı - {regionData[0].economical_zone[0].population}
+                {language === 'az' ? 'Əhalinin sayı' : 
+                 language === 'en' ? 'Population' : 
+                 'Численность населения'} - {regionData[0].economical_zone[0].population}
               </p>
               <p className="mobile:text-[12px] lg:text-[14px]">
-                Əhalinin sıxlığı - {regionData[0].economical_zone[0].density}
+                {language === 'az' ? 'Əhalinin sıxlığı' : 
+                 language === 'en' ? 'Population density' : 
+                 'Плотность населения'} - {regionData[0].economical_zone[0].density}
               </p>
               <p className="mobile:text-[12px] lg:text-[14px] mt-[10px]">
-                {regionData[0].economical_zone[0].name['az']} iqtisadi rayonuna daxildir:
+                {language === 'az' ? regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonuna daxildir:' : 
+                 language === 'en' ? regionData[0].economical_zone[0].name['az'] + ' economic zone belongs to:' : 
+                 regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonuna daxildir:'}
               </p>
               <ul className="list-none mt-[5px] space-y-1">
                 {zones.map((zone, index) => (

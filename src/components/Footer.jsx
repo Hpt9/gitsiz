@@ -60,6 +60,14 @@ export const Footer = () => {
     });
   };
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
   return (
     <div className=" w-full bg-[rgb(42,83,79)] relative flex flex-col mobile:pt-[32px] mobile:pb-[0px] lg:pt-[53px] lg:pb-[38px] justify-between footer_container gap-y-[40px]">
       {/* Desktop Footer */}
@@ -70,12 +78,20 @@ export const Footer = () => {
           if (menuKey !== "menu3") {
             return (
               <div className="flex flex-col " key={index}>
-                <p className="text-[rgba(255,255,255,1)] text-[16px] font-semibold">{menuKey === "menu1" ? "Haqqında" : "Klaster haqqında"}</p>
+                <p className="text-[rgba(255,255,255,1)] text-[16px] font-semibold">
+                  {menuKey === "menu1" ? 
+                    (language === 'az' ? "Haqqında" : 
+                     language === 'en' ? "About" : 
+                     "О нас") : 
+                    (language === 'az' ? "Klaster haqqında" : 
+                     language === 'en' ? "About cluster" : 
+                     "О кластере")}
+                </p>
                 {menu[menuKey].map((item, index) => (
                   <span
                     key={index}
                     className="text-white text-xs hover:text-[#c0c0c0] cursor-pointer mt-[10px]"
-                    onClick={() => item.link && navigate(`/${item.link}`)}
+                    onClick={() => handleNavigation(item.link)}
                   >
                     {item.name}
                   </span>
@@ -95,7 +111,9 @@ export const Footer = () => {
                 </div>
                 <div className="flex flex-col gap-y-[8px]">
                   <p className="text-[rgba(255,255,255,1)] text-[16px] font-semibold">
-                    Əlaqə
+                    {language === 'az' ? "Əlaqə" : 
+                     language === 'en' ? "Contact" : 
+                     "Контакты"}
                   </p>
                   <p className="text-[rgba(255,255,255,1)] text-[12px]">
                     info@kobklaster.az
@@ -120,13 +138,19 @@ export const Footer = () => {
                 return menuItems && menuItems.length > 0 ? (
                   <div className="flex flex-col" key={index}>
                     <p className="text-[rgba(255,255,255,1)] text-[16px] mb-[12px] font-semibold">
-                      {menuKey === "menu1" ? "Haqqında" : "Klaster haqqında"}
+                      {menuKey === "menu1" ? 
+                        (language === 'az' ? "Haqqında" : 
+                         language === 'en' ? "About" : 
+                         "О нас") : 
+                        (language === 'az' ? "Klaster haqqında" : 
+                         language === 'en' ? "About cluster" : 
+                         "О кластере")}
                     </p>
                     {menuItems.map((item, itemIndex) => (
                       <span
                         key={itemIndex}
                         className="text-[#e4e4e4] text-xs mb-[8px] hover:text-[#c0c0c0] cursor-pointer"
-                        onClick={() => item.link && navigate(`/${item.link}`)}
+                        onClick={() => handleNavigation(item.link)}
                       >
                         {item.name}
                       </span>
@@ -159,7 +183,9 @@ export const Footer = () => {
                     </div>
                     <div className="flex flex-col gap-y-[8px]">
                       <p className="text-[rgba(255,255,255,1)] text-[16px] font-semibold">
-                        Əlaqə
+                        {language === 'az' ? "Əlaqə" : 
+                         language === 'en' ? "Contact" : 
+                         "Контакты"}
                       </p>
                       <p className="text-[rgba(255,255,255,1)] text-[12px]">
                         info@kobklaster.az
@@ -187,7 +213,9 @@ export const Footer = () => {
           <img src={PASHA} alt="" className="w-[50px] h-[18px]" />
         </div>
         <div className="text-white text-[12px] text-center mobile:w-full mobile:mt-[10px] mobile:pt-[10px] mobile:pb-[64px] lg:w-fit lg:mt-[0px] lg:pt-[0px] lg:pb-[0px]">
-          {date.getFullYear()} © Bütün Hüquqlar Qorunur!
+          {language === 'az' ? date.getFullYear() + ' © Bütün Hüquqlar Qorunur!' : 
+           language === 'en' ? date.getFullYear() + ' © All rights reserved!' : 
+           date.getFullYear() + ' © Все права защищены!'}
         </div>
       </div> 
     </div>

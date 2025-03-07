@@ -3,7 +3,9 @@ import { MapSVG } from "./components/mapSVG";
 import { Region } from "./components/Region";
 import { AnimatePresence, motion } from "framer-motion";
 import { updatePageTitle } from '../../utils/updatePageTitle';
+import useLanguageStore from "../../store/languageStore";
 export const MapPage = () => {
+  const { language } = useLanguageStore();
   useEffect(() => {
     updatePageTitle('Klaster xəritəsi');
   }, []);
@@ -55,7 +57,9 @@ export const MapPage = () => {
     <div className="w-full">
       <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[170px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] leading-[39px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
-          KOB Klaster xəritəsi
+        {language === 'az' ? 'KOB Klaster xəritəsi' : 
+         language === 'en' ? 'SME Cluster Map' : 
+         'КОБ Кластер карта'}
         </h1>
       </div>
       <div className="w-full flex flex-col relative left-[50%] translate-x-[-50%] mobile:px-[16px] mobile:py-[32px] lg:py-[64px] lg:px-[90px] 2xl:px-[170px] lg:pt-[74px] lg:gap-y-[80px]">
@@ -76,7 +80,9 @@ export const MapPage = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[#2A534F] mobile:text-left lg:text-center text-[24px] leading-[29px] font-bold">
-                    İqtisadi zonalar üzrə klaster potensialı haqqında məlumat
+                  {language === 'az' ? 'İqtisadi zonalar üzrə klaster potensialı haqqında məlumat' : 
+                   language === 'en' ? 'Information about the cluster potential in economic zones' : 
+                   'Информация о потенциале кластеров в экономических зонах'}
                   </p>
                   <MapSVG 
                     setIsRegion={setIsRegion} 

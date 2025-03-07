@@ -90,7 +90,7 @@ export const Blog = () => {
         /> */}
       </div>
 
-      <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row lg:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
+      <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row lg:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px] lg:px-[170px]">
         <div className="flex flex-col mobile:w-full  sm:w-[540px]">
           <h3 className="mobile:px-[32px] mobile:py-[16px] px-[50px] py-[20px] text-white w-fit font-bold mobile:text-[24px] lg:text-[30px] bg-[#886B1F] rounded-tl-[26px] rounded-br-[26px]">
             {blogData?.blogs[0]?.blog_title[language]}

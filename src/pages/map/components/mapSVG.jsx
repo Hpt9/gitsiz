@@ -4,13 +4,13 @@ import { RegionFilter } from "./RegionFilter";
 import { ClusterFilter } from "./ClusterFilter";
 import { MethodFilter } from "./MethodFilter";
 import { useState } from "react";
-
+import useLanguageStore from '../../../store/languageStore';
 export const MapSVG = ({ setIsRegion, setElement, setRegionData, allData }) => {
   const [filteredRegions, setFilteredRegions] = useState([]);
   const [filteredClusters, setFilteredClusters] = useState([]);
   const [filteredMethods, setFilteredMethods] = useState([]);
   const [mapData] = useState(allData);
-
+  const { language } = useLanguageStore();
 
   const handleRegionClick = (regionName) => (e) => {
     e.preventDefault();

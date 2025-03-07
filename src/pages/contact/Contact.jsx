@@ -3,10 +3,19 @@ import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { updatePageTitle } from "../../utils/updatePageTitle";
+import { settingsCache } from '../../utils/settingsCache';
+import useLanguageStore from "../../store/languageStore";
 export const Contact = () => {
+  const { language } = useLanguageStore();
   useEffect(() => {
-    updatePageTitle("Əlaqə");
-  }, []);
+    // Update page title based on language
+    const titles = {
+      az: "Əlaqə",
+      en: "Contact",
+      ru: "Контакты"
+    };
+    updatePageTitle(titles[language]);
+  }, [language]);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
   const [formData, setFormData] = useState({
@@ -21,38 +30,44 @@ export const Contact = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        // Check cache first
+        const cachedData = settingsCache.get();
+        if (cachedData) {
+          setSettings(cachedData);
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch("https://kobklaster.tw1.ru/api/settings");
         const data = await response.json();
-        setSettings(
-          data[0].reduce((acc, item) => {
-            acc[item.key] = item.value;
-            return acc;
-          }, {})
-        );
+        const formattedData = data[0].reduce((acc, item) => {
+          acc[item.key] = item.value;
+          return acc;
+        }, {});
+        
+        settingsCache.set(formattedData);
+        setSettings(formattedData);
       } catch (error) {
         console.error("Error fetching settings:", error);
       } finally {
-        //console.log(settings);
         setLoading(false);
       }
     };
 
     fetchSettings();
-  }, [settings]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //console.log(formData)
-    // Check if all fields are filled
-    if (
-      !formData.full_name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.message
-    ) {
+    
+    if (!formData.full_name || !formData.email || !formData.phone || !formData.message) {
       toast.error("Bütün sahələri doldurun!", {
         position: "top-right",
         autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
       return;
     }
@@ -62,17 +77,23 @@ export const Contact = () => {
       const response = await fetch("https://kobklaster.tw1.ru/api/contact", {
         method: "POST",
         headers: {
-          Accept: "application/json",
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
 
+      // Show success toast even if we can't parse the response
       if (response.ok) {
         toast.success("Mesajınız uğurla göndərildi!", {
           position: "top-right",
           autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
         });
-        // Reset form
+        
         setFormData({
           full_name: "",
           email: "",
@@ -81,13 +102,17 @@ export const Contact = () => {
           message: "",
         });
       } else {
-        throw new Error("Network response was not ok");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error:", error);
       toast.error("Xəta baş verdi. Yenidən cəhd edin.", {
         position: "top-right",
         autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
     } finally {
       setSubmitting(false);
@@ -115,7 +140,7 @@ export const Contact = () => {
       <ToastContainer />
       <div className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[170px] lg:py-[100px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
-          Əlaqə
+          {language === 'az' ? 'Əlaqə' : language === 'en' ? 'Contact' : 'Контакты'}
         </h1>
         {/* <img
           src={BG_IMAGE}
@@ -126,16 +151,22 @@ export const Contact = () => {
       <div className="flex mobile:flex-col  gap-x-[100px] py-[100px] mobile:py-[32px] mobile:px-[16px] gap-y-[64px] justify-center items-center md:gap-y-[50px] lg:flex-row lg:px-[20px]">
         <div className="mobile:w-full lg:w-[540px] flex flex-col justify-center">
           <h1 className="mobile:text-[24px] lg:text-[45px] font-bold text-[rgb(43,82,79)] mobile:mb-[34px] lg:mb-[68px]">
-            Bizimlə əlaqə saxlayın
+            {language === 'az' ? 'Bizimlə əlaqə saxlayın' : 
+             language === 'en' ? 'Contact us' : 
+             'Свяжитесь с нами'}
           </h1>
           <div className="contact ">
             <div className="flex mobile:justify-between lg:justify-start lg:gap-x-[50px]">
               <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[18px]">
                 <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
-                  Telefon
+                  {language === 'az' ? 'Telefon' : 
+                   language === 'en' ? 'Phone' : 
+                   'Телефон'}
                 </p>
                 <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
-                  Mail
+                  {language === 'az' ? 'Mail' : 
+                   language === 'en' ? 'Email' : 
+                   'Почта'}
                 </p>
                 {/* <p className="mobile:text-[14px] lg:text-[16px] font-bold text-[rgb(43,82,79)]">
                   İnstagram
@@ -146,10 +177,10 @@ export const Contact = () => {
               </div>
               <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[18px]">
                 <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
-                  {settings?.Telefon?.az}
+                  {settings?.Phone?.[language] || settings?.Phone?.az}
                 </p>
                 <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
-                  {settings?.Mail?.az}
+                  {settings?.Mail?.[language] || settings?.Mail?.az}
                 </p>
                 {/* <p className="mobile:text-[14px] lg:text-[16px] text-[rgb(43,82,79)] mobile:text-right lg:text-left">
                   {settings?.İnstagram?.az}
@@ -255,7 +286,7 @@ export const Contact = () => {
             </div>
           </div>
           <p className="text-[14px] w-[250px] font-bold text-[rgb(43,82,79)]">
-            {settings?.icon_bottom_text?.az}
+            {settings?.icon_bottom_text?.[language] || settings?.icon_bottom_text?.az}
           </p>
         </div>
         <form
@@ -271,7 +302,7 @@ export const Contact = () => {
                 onChange={handleChange}
                 required
                 className="border-b border-[rgb(43,82,79)] py-[16px] focus:outline-none placeholder:text-[#2A534F] text-[#2A534F]"
-                placeholder={settings?.name_sname?.az}
+                placeholder={settings?.name_sname?.[language] || settings?.name_sname?.az}
               />
             </div>
 
@@ -283,7 +314,7 @@ export const Contact = () => {
                 onChange={handleChange}
                 required
                 className="border-b border-[rgb(43,82,79)] py-[16px] focus:outline-none placeholder:text-[#2A534F] text-[#2A534F]"
-                placeholder={settings?.email?.az}
+                placeholder={settings?.email?.[language] || settings?.email?.az}
               />
             </div>
 
@@ -295,7 +326,7 @@ export const Contact = () => {
                 onChange={handleChange}
                 required
                 className="border-b border-[rgb(43,82,79)] py-[16px] focus:outline-none placeholder:text-[#2A534F] text-[#2A534F]"
-                placeholder={settings?.phone?.az}
+                placeholder={settings?.phone?.[language] || settings?.phone?.az}
               />
             </div>
 
@@ -318,7 +349,7 @@ export const Contact = () => {
                 onChange={handleChange}
                 required
                 className="border-b border-[rgb(43,82,79)] py-[16px] focus:outline-none resize-none placeholder:text-[#2A534F] text-[#2A534F]"
-                placeholder={settings?.message?.az}
+                placeholder={settings?.message?.[language] || settings?.message?.az}
                 rows={2}
               />
             </div>
@@ -332,7 +363,13 @@ export const Contact = () => {
                 submitting ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {submitting ? "Göndərilir..." : "Göndər"}
+              {submitting ? 
+                (language === 'az' ? 'Göndərilir...' : 
+                 language === 'en' ? 'Sending...' : 
+                 'Отправка...') : 
+                (language === 'az' ? 'Göndər' : 
+                 language === 'en' ? 'Send' : 
+                 'Отправить')}
             </button>
           </div>
         </form>
