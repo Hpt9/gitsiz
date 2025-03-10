@@ -5,6 +5,7 @@ import "./map.css"; // Make sure to import the CSS
 import React, { useState, useEffect } from 'react';
 import useLanguageStore from '../../../store/languageStore';
 export const Region = ({ regionData, element, setIsRegion }) => {
+  //console.log(regionData)
   const { language } = useLanguageStore();
   if (!regionData || !regionData[0]) {
     return <div>Loading...</div>;
@@ -91,6 +92,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
       fetch(`https://kobklaster.tw1.ru/api/economical-zones/${regionData[0].economical_zone[0].slug}`)
         .then(response => response.json())
         .then(data => {
+          console.log(data.zones);
           setZones(data.zones);
         })
         .catch(error => console.error('Error fetching region data:', error));
@@ -170,6 +172,129 @@ export const Region = ({ regionData, element, setIsRegion }) => {
     console.log(methodId)
     setSelectedMethod(methodId);
   };
+  const returnMethod = (methodId) => {
+    if (methodId === 2) {
+      return ' - Təmərküzləşmə';
+    } else if (methodId === 1) {
+      return ' - Beynəlxalq Potensiallı';
+    }
+  };
+  
+  const calculateTotals = () => {
+    if (!zones.length) return null;
+    
+    return zones.reduce((totals, zone) => ({
+      population: (totals.population || 0) + zone.population_thousand_people,
+      pensioners: (totals.pensioners || 0) + zone.number_of_pensioners,
+      children: (totals.children || 0) + zone.number_of_children_thousand_people,
+      young_people: (totals.young_people || 0) + zone.number_of_young_people,
+      students: (totals.students || 0) + zone.number_of_students,
+      paid_workers: (totals.paid_workers || 0) + zone.number_of_paid_workers_thousand_people,
+      self_employed: (totals.self_employed || 0) + zone.number_of_registered_self_empleyeers,
+      micro_enterprises: (totals.micro_enterprises || 0) + zone.number_of_registered_micro_employeer_entites,
+      small_enterprises: (totals.small_enterprises || 0) + zone.number_of_registered_small_employeer_entites,
+      middle_enterprises: (totals.middle_enterprises || 0) + zone.number_of_registered_middle_employeer_entites,
+      large_enterprises: (totals.large_enterprises || 0) + zone.number_of_registered_large_employeer_entites,
+      motels: (totals.motels || 0) + zone.number_of_motels,
+      total_circulation: (totals.total_circulation || 0) + zone.total_circulation,
+      retail_sale: (totals.retail_sale || 0) + zone.retail_sale_turnover,
+      paid_services: (totals.paid_services || 0) + zone.paid_services_provided_to_the_population,
+      avg_salary: Math.round(((totals.avg_salary || 0) * (totals.count || 0) + zone.average_monthly_nominal_salary) / (totals.count + 1)),
+      count: (totals.count || 0) + 1
+    }), {});
+  };
+
+  const renderRegionTotals = () => {
+    const totals = calculateTotals();
+    if (!totals) return null;
+
+    return (
+      <div className="bg-white/10">
+        <div className="grid grid-cols-2 grid-rows-9 gap-1">
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Ümumi əhali' : 
+             language === 'en' ? 'Total population' : 
+             'Общее население'}: {totals.population} min
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Uşaqların sayı' : 
+             language === 'en' ? 'Number of children' : 
+             'Количество детей'}: {totals.children} min
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Gənclərin sayı' : 
+             language === 'en' ? 'Number of young people' : 
+             'Количество молодежи'}: {totals.young_people} min
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Təqaüdçülərin sayı' : 
+             language === 'en' ? 'Number of pensioners' : 
+             'Количество пенсионеров'}: {totals.pensioners}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'İşçilərin sayı' : 
+             language === 'en' ? 'Number of workers' : 
+             'Количество работников'}: {totals.paid_workers} min
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Özünüməşğul şəxslərin sayı' : 
+             language === 'en' ? 'Number of self-employed' : 
+             'Количество самозанятых'}: {totals.self_employed}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Tələbələrin sayı' : 
+             language === 'en' ? 'Number of students' : 
+             'Количество студентов'}: {totals.students}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Orta aylıq əmək haqqı' : 
+             language === 'en' ? 'Average monthly salary' : 
+             'Средняя месячная зарплата'}: {totals.avg_salary} ₼
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Mikro müəssisələr' : 
+             language === 'en' ? 'Micro enterprises' : 
+             'Микропредприятия'}: {totals.micro_enterprises}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Kiçik müəssisələr' : 
+             language === 'en' ? 'Small enterprises' : 
+             'Малые предприятия'}: {totals.small_enterprises}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Orta müəssisələr' : 
+             language === 'en' ? 'Medium enterprises' : 
+             'Средние предприятия'}: {totals.middle_enterprises}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Böyük müəssisələr' : 
+             language === 'en' ? 'Large enterprises' : 
+             'Крупные предприятия'}: {totals.large_enterprises}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Motellərin sayı' : 
+             language === 'en' ? 'Number of motels' : 
+             'Количество мотелей'}: {totals.motels}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Ümumi dövriyyə' : 
+             language === 'en' ? 'Total circulation' : 
+             'Общий оборот'}: {totals.total_circulation.toFixed(1)}
+          </p>
+          <p className="text-[14px] mb-1">
+            {language === 'az' ? 'Pərakəndə satış dövriyyəsi' : 
+             language === 'en' ? 'Retail sales turnover' : 
+             'Оборот розничной торговли'}: {totals.retail_sale}
+          </p>
+          <p className="text-[14px]">
+            {language === 'az' ? 'Əhaliyə göstərilən ödənişli xidmətlər' : 
+             language === 'en' ? 'Paid services provided to population' : 
+             'Платные услуги населению'}: {totals.paid_services}
+          </p>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-y-[20px] w-full max-w-[1920px]">
@@ -190,7 +315,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
 
       {/* Title */}
       <p className="text-[#2A534F] text-center mobile:text-[18px] lg:text-[24px] font-bold">
-        {language === 'az' ? regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonu üzrə KOB Klasterlər' : 
+        {language === 'az' ? regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonu üzrə KOB Klasterlər' + returnMethod(selectedMethod) : 
          language === 'en' ? regionData[0].economical_zone[0].name['az'] + ' economic zone KOB Clusters' : 
          regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonu üzrə KOB Klasterlər'}
       </p>
@@ -330,6 +455,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
           {/* Region Information Text */}
           <div className="mt-4 text-[#2A534F]">
             <div className="flex flex-col">
+              <div className="grid grid-cols-2 grid-rows-1">
               <p className="mobile:text-[12px] lg:text-[14px]">
                 {language === 'az' ? 'Əhalinin sayı' : 
                  language === 'en' ? 'Population' : 
@@ -340,20 +466,40 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                  language === 'en' ? 'Population density' : 
                  'Плотность населения'} - {regionData[0].economical_zone[0].density}
               </p>
+              </div>
+              {renderRegionTotals()}
               <p className="mobile:text-[12px] lg:text-[14px] mt-[10px]">
                 {language === 'az' ? regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonuna daxildir:' : 
                  language === 'en' ? regionData[0].economical_zone[0].name['az'] + ' economic zone belongs to:' : 
-                 regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonuna daxildir:'}
-              </p>
-              <ul className="list-none mt-[5px] space-y-1">
-                {zones.map((zone, index) => (
-                  <li key={index} className="mobile:text-[12px] lg:text-[14px]">
-                    {zone.name?.az}
-                  </li>
+                 regionData[0].economical_zone[0].name['az'] + ' iqtisadi rayonuna daxildir:'}{zones.map((zone, index) => (
+                  <span key={index} className="mobile:text-[12px] lg:text-[14px]">
+                  {zone.name?.az}{index!==zones.length-1?',':''}
+                  {index < zones.length - 1 && ' '}
+                  </span>
+                  
                 ))}
-              </ul>
+              </p>
+              
+              {/* <p>
+              {zones.map((zone, index) => (
+                  <span key={index} className="mobile:text-[12px] lg:text-[14px]">
+                  {zone.name?.az}{index!==zones.length-1?',':''}
+                  {index < zones.length - 1 && ' '}
+                  </span>
+                  
+                ))}
+              </p> */}
             </div>
           </div>
+
+          {/* <div className="mt-6">
+            <p className="text-[14px] font-semibold mb-4">
+              {language === 'az' ? 'Region üzrə ümumi məlumat' : 
+               language === 'en' ? 'General information about the region' : 
+               'Общая информация по региону'}:
+            </p>
+            
+          </div> */}
         </div>
 
         {/* Right side - Map on desktop */}

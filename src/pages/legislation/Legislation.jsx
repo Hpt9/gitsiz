@@ -43,7 +43,7 @@ export const Legislation = () => {
 
   return (
     <div className="w-full">
-      <div className="blog_header mobile:h-fit mobile:pb-[64px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] mobile:pt-[0px] lg:px-[175px] bg-[rgb(42,83,79)] relative">
+      <div className="blog_header mobile:h-fit mobile:pb-[64px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] mobile:pt-[0px] lg:px-[130px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)] relative z-[2]">
           {legislationData.title[language]}
         </h1>

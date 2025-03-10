@@ -4,43 +4,52 @@ import { Region } from "./components/Region";
 import { AnimatePresence, motion } from "framer-motion";
 import { updatePageTitle } from '../../utils/updatePageTitle';
 import useLanguageStore from "../../store/languageStore";
+import axios from 'axios';
+
 export const MapPage = () => {
   const { language } = useLanguageStore();
-  useEffect(() => {
-    updatePageTitle('Klaster xəritəsi');
-  }, []);
   const [isRegion, setIsRegion] = useState(false);
   const [element, setElement] = useState("");
   const [loading, setLoading] = useState(true);
   const [regionData, setRegionData] = useState(null);
   const [allData, setAllData] = useState([]);
+  const [economicalZonesData, setEconomicalZonesData] = useState(null);
+
+  useEffect(() => {
+    updatePageTitle('Klaster xəritəsi');
+  }, []);
 
   // Initial data fetch when component mounts
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchAllData = async () => {
       try {
-        const response = await fetch('https://kobklaster.tw1.ru/api/filter', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            economical_zone_id: [],
-            method_id: [],
-            cluster_id: []
-          })
-        });
-        const data = await response.json();
-        setAllData(data);
-        //console.log(data);
+        // Fetch both datasets in parallel
+        const [filterResponse, zonesResponse] = await Promise.all([
+          fetch('https://kobklaster.tw1.ru/api/filter', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              economical_zone_id: [],
+              method_id: [],
+              cluster_id: []
+            })
+          }),
+          axios.get('https://kobklaster.tw1.ru/api/economical-zones')
+        ]);
+
+        const filterData = await filterResponse.json();
+        setAllData(filterData);
+        setEconomicalZonesData(zonesResponse.data);
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchInitialData();
+    fetchAllData();
   }, []);
 
   // Update regionData when element or allData changes
@@ -55,7 +64,7 @@ export const MapPage = () => {
 
   return (
     <div className="w-full">
-      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[170px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
+      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[130px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] leading-[39px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
         {language === 'az' ? 'KOB Klaster xəritəsi' : 
          language === 'en' ? 'SME Cluster Map' : 
@@ -72,7 +81,7 @@ export const MapPage = () => {
             <AnimatePresence mode="wait">
               {!isRegion ? (
                 <motion.div
-                  className="flex flex-col gap-y-[120px]"
+                  className="flex flex-col gap-y-[120px] justify-center"
                   key="map"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -80,15 +89,16 @@ export const MapPage = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[#2A534F] mobile:text-left lg:text-center text-[24px] leading-[29px] font-bold">
-                  {language === 'az' ? 'İqtisadi zonalar üzrə klaster potensialı haqqında məlumat' : 
-                   language === 'en' ? 'Information about the cluster potential in economic zones' : 
-                   'Информация о потенциале кластеров в экономических зонах'}
+                  {language === 'az' ? 'İqtisadi rayonlar üzrə klaster potensialı haqqında məlumat' : 
+                   language === 'en' ? 'Information about the cluster potential in economic regions' : 
+                   'Информация о потенциале кластеров в экономических районах'}
                   </p>
                   <MapSVG 
                     setIsRegion={setIsRegion} 
                     setElement={setElement} 
                     setRegionData={setRegionData} 
                     allData={allData}
+                    economicalZonesData={economicalZonesData}
                   />
                 </motion.div>
               ) : (

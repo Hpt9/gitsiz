@@ -199,18 +199,18 @@ export const Footer = () => {
           </div>
         </div>
         <div className="footer_icons flex gap-x-[16px] w-full items-center justify-center relative z-[20]">
-          <img src={MTTM} alt="" className="" />
-          <img src={ik} alt="" className="w-[78px] h-[16px]" />
           <img src={KOB} alt="" className="w-[34px] h-[42px]" />
           <img src={PASHA} alt="" className="w-[50px] h-[18px]" />
+          <img src={MTTM} alt="" className="" />
+          <img src={ik} alt="" className="w-[78px] h-[16px]" />
         </div>
       </div>
       <div className="flex items-center justify-center gap-x-[100px]">
         <div className="footer_icons gap-x-[16px]  items-center justify-center relative z-[20] mobile:hidden lg:flex">
-          <img src={MTTM} alt="" className="" />
-          <img src={ik} alt="" className="w-[78px] h-[16px]" />
           <img src={KOB} alt="" className="w-[34px] h-[42px]" />
           <img src={PASHA} alt="" className="w-[50px] h-[18px]" />
+          <img src={MTTM} alt="" className="" />
+          <img src={ik} alt="" className="w-[78px] h-[16px]" />
         </div>
         <div className="text-white text-[12px] text-center mobile:w-full mobile:mt-[10px] mobile:pt-[10px] mobile:pb-[64px] lg:w-fit lg:mt-[0px] lg:pt-[0px] lg:pb-[0px]">
           {language === 'az' ? date.getFullYear() + ' © Bütün Hüquqlar Qorunur!' : 

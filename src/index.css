@@ -203,3 +203,21 @@
 .faq_accordion_panel  span{
   font-size: 16px !important;
 }
+
+@media screen and (min-width: 1921px) {
+  .map_container{
+    display: flex;
+    justify-content: center;
+  }
+}
+
+
+.zaqatala-sheki::before{
+      content: '';
+      display: block;
+      position: relative;
+      z-index: 1000;
+      width: 100px;
+      height: 100px;
+      background-color: red;
+    }

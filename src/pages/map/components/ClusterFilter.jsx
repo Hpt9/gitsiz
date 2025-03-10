@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selectedMethods }) => {
+export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selectedMethods, resetTrigger }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClusters, setSelectedClusters] = useState([]);
   const { language } = useLanguageStore();
+  
+  useEffect(() => {
+    setSelectedClusters([]);
+  }, [resetTrigger]);
+
   const getAvailableClusters = () => {
     if (!data) return [];
     
@@ -84,7 +89,7 @@ export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selecte
                 key={cluster.id}
                 className="flex items-center justify-between space-x-3 pr-[6px] py-[2px] rounded cursor-pointer group hover:bg-gray-100"
               >
-                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px]">
+                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px] max-w-[200px]">
                   {cluster.name}
                 </span>
                 <input
@@ -119,5 +124,6 @@ ClusterFilter.propTypes = {
   selectedRegions: PropTypes.arrayOf(PropTypes.number).isRequired,
   onClustersChange: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
-  selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired
+  selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
+  resetTrigger: PropTypes.bool.isRequired
 }; 

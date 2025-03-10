@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selectedMethods }) => {
+
+export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selectedMethods, resetTrigger }) => {
   const { language } = useLanguageStore();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRegions, setSelectedRegions] = useState([]);
+
+  useEffect(() => {
+    setSelectedRegions([]);
+  }, [resetTrigger]);
 
   const getAvailableRegions = () => {
     if (!data) return [];
@@ -61,9 +66,9 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
         className="bg-[#2A534F] rounded-[4px] shadow-lg px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
       >
         <span className="text-[12px] font-semibold text-[white]">
-          {language === 'az' ? 'Iqtisadi Zona' : 
-           language === 'en' ? 'Economic Zone' : 
-           'Экономическая зона'}
+          {language === 'az' ? 'İqtisadi Rayon' : 
+           language === 'en' ? 'Economic Region' : 
+           'Экономический район'}
         </span>
         <svg 
           className={`w-5 h-5 transition-transform text-white ${isOpen ? 'rotate-180' : ''}`} 
@@ -86,14 +91,14 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
                 key={region.id}
                 className="flex items-center justify-between space-x-3 pr-[6px] py-[2px] rounded cursor-pointer group hover:bg-gray-100"
               >
-                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px]">
+                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px] ">
                   {region.name}
                 </span>
                 <input
                   type="checkbox"
                   checked={selectedRegions.includes(region.id)}
                   onChange={(e) => handleCheckboxChange(region.id, e)}
-                  className="mobile:w-[12px] mobile:h-[12px] lg:w-4 lg:h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
+                  className="w-4 h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
                 />
               </label>
             ))}
@@ -121,5 +126,6 @@ RegionFilter.propTypes = {
   onRegionsChange: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired,
-  selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired
+  selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
+  resetTrigger: PropTypes.bool.isRequired
 }; 

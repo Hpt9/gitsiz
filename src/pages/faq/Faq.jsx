@@ -45,7 +45,7 @@ export const Faq = () => {
   }
   return (
     <div className="w-full">
-      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[170px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
+      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[130px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
 
         <h1 className="mobile:text-[32px] leading-[60px] lg:text-[61px] font-bold  text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[500px]">
         {language === 'az' ? 'Ən çox verilən suallar' : language === 'en' ? 'Frequently Asked Questions' : 'Часто задаваемые вопросы'}
@@ -71,9 +71,9 @@ export const Faq = () => {
            'Найдите ответы на свои вопросы у нас'}
           </h3>
           <button onClick={() => navigate("/elaqe")} className="w-fit text-[16px] py-[16px] px-[65px] bg-[#886B1F] font-semibold text-[rgb(255,255,255)] rounded-tl-[20px] rounded-br-[20px] hover:bg-white hover:text-[#886B1F] border-2 transition-all duration-150 border-[#886B1F]">
-          {language === 'az' ? 'Əlaqə' : 
-           language === 'en' ? 'Contact' : 
-           'Контакты'}
+          {language === 'az' ? 'Bizə yazın' : 
+           language === 'en' ? 'Contact us' : 
+           'Свяжитесь с нами'}
           </button>
         </div>
       </div>

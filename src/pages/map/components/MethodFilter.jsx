@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedClusters }) => {
+export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedClusters, resetTrigger }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMethods, setSelectedMethods] = useState([]);
   const { language } = useLanguageStore();
+  
+  useEffect(() => {
+    setSelectedMethods([]);
+  }, [resetTrigger]);
+
   const getAvailableMethods = () => {
     if (!data) return [];
     
@@ -116,5 +121,6 @@ MethodFilter.propTypes = {
   onMethodsChange: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   selectedRegions: PropTypes.arrayOf(PropTypes.number).isRequired,
-  selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired
+  selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired,
+  resetTrigger: PropTypes.bool.isRequired
 }; 
