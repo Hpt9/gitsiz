@@ -61,3 +61,10 @@ path {
 .hover\:opacity-50:hover {
   opacity: 0.5 !important; /* Override inline opacity when hovering */
 }
+
+/* Add some bottom padding to the map container on mobile to account for the selected filters panel */
+@media (max-width: 768px) {
+  .map_container {
+    padding-bottom: 120px;
+  }
+}

@@ -190,6 +190,46 @@ export const MapSVG = ({
     setIsTooltipVisible(false);
   };
 
+  // Add new function to get selected filter names
+  const getSelectedFilterNames = () => {
+    const selectedRegions = filteredRegions.map(id => {
+      const region = economicalZonesData.find(r => r.id === id);
+      return region?.name[language] || '';
+    }).filter(Boolean);
+
+    const selectedClusters = filteredClusters.map(id => {
+      const cluster = allData.find(item => item.cluster[0].id === id)?.cluster[0];
+      return cluster?.name[language] || '';
+    }).filter(Boolean);
+
+    return {
+      regions: selectedRegions,
+      clusters: selectedClusters
+    };
+  };
+
+  // Add new handlers for individual removals
+  const handleRemoveRegion = (regionName) => {
+    const region = economicalZonesData.find(r => r.name[language] === regionName);
+    if (region) {
+      setFilteredRegions(filteredRegions.filter(id => id !== region.id));
+    }
+  };
+
+  const handleRemoveCluster = (clusterName) => {
+    const cluster = allData.find(item => item.cluster[0].name[language] === clusterName)?.cluster[0];
+    if (cluster) {
+      setFilteredClusters(filteredClusters.filter(id => id !== cluster.id));
+    }
+  };
+
+  const handleRemoveMethod = (methodName) => {
+    const method = allData.find(item => item.method[0].name[language] === methodName)?.method[0];
+    if (method) {
+      setFilteredMethods(filteredMethods.filter(id => id !== method.id));
+    }
+  };
+
   return (
     <div className="relative map_container">
       <div className="absolute top-[-105px] mobile:left-[0] lg:left-[-50px] z-10 flex items-center mobile:gap-x-[5px] lg:gap-x-[10px] mobile:w-full tablet:w-[550px] sm:flex mobile:grid mobile:grid-cols-2 mobile:grid-rows-1 mobile:gap-y-[5px]">
@@ -226,7 +266,72 @@ export const MapSVG = ({
         </button>
       </div>
 
-      
+      {/* Updated mobile filters display */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50">
+        {(filteredRegions.length > 0 || filteredClusters.length > 0) ? (
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-semibold text-[#2A534F]">
+                {language === 'az' ? 'Seçilmişlər' : language === 'en' ? 'Selected' : 'Выбранные'}
+              </h3>
+              <button 
+                onClick={handleClearAll}
+                className="text-red-500 text-sm"
+              >
+                {language === 'az' ? 'Hamısını sil' : language === 'en' ? 'Clear all' : 'Очистить все'}
+              </button>
+            </div>
+
+            {/* Regions Section */}
+            {getSelectedFilterNames().regions.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-gray-500">
+                  {language === 'az' ? 'İqtisadi rayonlar' : language === 'en' ? 'Economic regions' : 'Экономические районы'}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {getSelectedFilterNames().regions.map((name, index) => (
+                    <span key={`region-${index}`} className="bg-[#2A534F] text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      {name}
+                      <button
+                        onClick={() => handleRemoveRegion(name)}
+                        className="ml-1 hover:text-gray-300 focus:outline-none"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Clusters Section */}
+            {getSelectedFilterNames().clusters.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-gray-500">
+                  {language === 'az' ? 'Klasterlər' : language === 'en' ? 'Clusters' : 'Кластеры'}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {getSelectedFilterNames().clusters.map((name, index) => (
+                    <span key={`cluster-${index}`} className="bg-[#2A534F] text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      {name}
+                      <button
+                        onClick={() => handleRemoveCluster(name)}
+                        className="ml-1 hover:text-gray-300 focus:outline-none"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+      </div>
 
       <svg
         viewBox="0 0 361 290"
