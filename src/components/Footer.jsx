@@ -69,7 +69,7 @@ export const Footer = () => {
   };
 
   return (
-    <div className=" w-full bg-[rgb(42,83,79)] relative flex flex-col mobile:pt-[32px] mobile:pb-[0px] lg:pt-[53px] lg:pb-[38px] justify-between footer_container gap-y-[40px]">
+    <div className=" w-full bg-[rgb(42,83,79)] relative flex flex-col mobile:pt-[32px] mobile:pb-[0px] lg:pt-[53px] lg:pb-[38px] justify-between footer_container mobile:gap-y-[0] lg:gap-y-[40px]">
       {/* Desktop Footer */}
       <div className="lg:flex mobile:hidden lg:flex-row w-full h-[113px] relative z-[20] justify-center gap-x-[140px]">
         {footerMenus.map((menu, index) => {

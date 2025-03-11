@@ -1,10 +1,23 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selectedMethods, resetTrigger, selectedClusters: externalSelectedClusters }) => {
-  const [isOpen, setIsOpen] = useState(false);
+
+export const ClusterFilter = ({ 
+  selectedRegions, 
+  onClustersChange, 
+  data, 
+  selectedMethods, 
+  resetTrigger, 
+  selectedClusters: externalSelectedClusters,
+  openFilter,
+  setOpenFilter,
+  filterId
+}) => {
   const [selectedClusters, setSelectedClusters] = useState([]);
   const { language } = useLanguageStore();
+  
+  // Check if this filter is open based on parent state
+  const isOpen = openFilter === filterId;
   
   // Sync with external state (filters from bottom panel)
   useEffect(() => {
@@ -16,6 +29,11 @@ export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selecte
   useEffect(() => {
     setSelectedClusters([]);
   }, [resetTrigger]);
+
+  const toggleFilter = () => {
+    // If already open, close it. Otherwise open this one (which closes others)
+    setOpenFilter(isOpen ? null : filterId);
+  };
 
   const getAvailableClusters = () => {
     if (!data) return [];
@@ -67,7 +85,7 @@ export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selecte
   return (
     <div className="relative tablet:w-[50%] mobile:w-full">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleFilter}
         className="bg-[#2A534F] rounded-[4px] shadow-lg px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
       >
         <span className="text-[12px] font-semibold text-[white]">
@@ -96,7 +114,7 @@ export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selecte
                 key={cluster.id}
                 className="flex items-center justify-between space-x-3 pr-[6px] py-[2px] rounded cursor-pointer group hover:bg-gray-100"
               >
-                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px] max-w-[200px]">
+                <span className="text-gray-700 group-hover:text-[#2A534F] mobile:text-[12px] lg:text-[16px] w-[200px]">
                   {cluster.name}
                 </span>
                 <input
@@ -133,5 +151,8 @@ ClusterFilter.propTypes = {
   data: PropTypes.array.isRequired,
   selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
   resetTrigger: PropTypes.bool.isRequired,
-  selectedClusters: PropTypes.arrayOf(PropTypes.number)
+  selectedClusters: PropTypes.arrayOf(PropTypes.number),
+  openFilter: PropTypes.string,
+  setOpenFilter: PropTypes.func.isRequired,
+  filterId: PropTypes.string.isRequired
 }; 

@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { RegionFilter } from "./RegionFilter";
 import { ClusterFilter } from "./ClusterFilter";
 import { MethodFilter } from "./MethodFilter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import useLanguageStore from "../../../store/languageStore";
 import axios from 'axios';
 
@@ -23,6 +24,8 @@ export const MapSVG = ({
   const [tooltipContent, setTooltipContent] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(true);
+  const [openFilter, setOpenFilter] = useState(null); // 'region', 'cluster', 'method', or null
 
   const handleClearAll = () => {
     setFilteredRegions([]);
@@ -148,6 +151,12 @@ export const MapSVG = ({
   };
 
   const handleMouseMove = (e, regionSlug) => {
+    // Check if device is mobile (screen width < 768px or has touch capability)
+    const isMobile = window.innerWidth < 1024 || ('ontouchstart' in window);
+    
+    // Skip showing tooltip on mobile devices
+    if (isMobile) return;
+    
     if (!isRegionActive(regionSlug)) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -234,6 +243,11 @@ export const MapSVG = ({
     }
   };
 
+  // Toggle panel collapse state
+  const togglePanelCollapse = () => {
+    setIsPanelCollapsed(!isPanelCollapsed);
+  };
+
   return (
     <div className="relative map_container">
       <div className="absolute top-[-105px] mobile:left-[0] lg:left-[-50px] z-10 flex items-center mobile:gap-x-[5px] lg:gap-x-[10px] mobile:w-full tablet:w-[550px] sm:flex mobile:grid mobile:grid-cols-2 mobile:grid-rows-1 mobile:gap-y-[5px]">
@@ -243,6 +257,9 @@ export const MapSVG = ({
           selectedRegions={filteredRegions}
           selectedClusters={filteredClusters}
           resetTrigger={resetTrigger}
+          openFilter={openFilter}
+          setOpenFilter={setOpenFilter}
+          filterId="method"
         />
         <RegionFilter
           onRegionsChange={handleRegionsChange}
@@ -250,7 +267,10 @@ export const MapSVG = ({
           selectedClusters={filteredClusters}
           selectedMethods={filteredMethods}
           resetTrigger={resetTrigger}
-          selectedRegions={filteredRegions} // Pass the current selected regions
+          selectedRegions={filteredRegions}
+          openFilter={openFilter}
+          setOpenFilter={setOpenFilter}
+          filterId="region"
         />
         <ClusterFilter
           selectedRegions={filteredRegions}
@@ -258,11 +278,14 @@ export const MapSVG = ({
           data={allData}
           selectedMethods={filteredMethods}
           resetTrigger={resetTrigger}
-          selectedClusters={filteredClusters} // Pass the current selected clusters
+          selectedClusters={filteredClusters}
+          openFilter={openFilter}
+          setOpenFilter={setOpenFilter}
+          filterId="cluster"
         />
         <button
           onClick={handleClearAll}
-          className="bg-[#2a534f] text-white px-[16px] py-[8px] rounded-md w-fit text-nowrap hover:bg-[#234540] transition-colors"
+          className="bg-[#2a534f] mobile:hidden lg:flex text-white px-[12px] py-[12px] text-[12px] rounded-[4px] w-fit text-nowrap hover:bg-[#234540] transition-colors"
         >
           {language === "az"
             ? "Hamısını sil"
@@ -272,22 +295,46 @@ export const MapSVG = ({
         </button>
       </div>
 
-      {/* Updated mobile filters display */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50">
-        {(filteredRegions.length > 0 || filteredClusters.length > 0) ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-center">
-              <h3 className="text-sm font-semibold text-[#2A534F]">
-                {language === 'az' ? 'Seçilmişlər' : language === 'en' ? 'Selected' : 'Выбранные'}
-              </h3>
-              <button 
-                onClick={handleClearAll}
-                className="text-red-500 text-sm"
-              >
-                {language === 'az' ? 'Hamısını sil' : language === 'en' ? 'Clear all' : 'Очистить все'}
-              </button>
-            </div>
+      {/* Updated mobile filters display with collapse functionality */}
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 transition-all duration-300 ${isPanelCollapsed ? 'translate-y-[calc(100%-49px)]' : ''}`}>
+        {/* Collapsible header with arrow */}
+        <div 
+          className="flex justify-between items-center p-3 border-b cursor-pointer"
+          onClick={togglePanelCollapse}
+        >
+          <h3 className="text-sm font-semibold text-[#2A534F] flex items-center gap-2">
+            <svg 
+              className={`w-5 h-5 transition-transform text-[#2A534F] ${isPanelCollapsed ? '' : 'rotate-180'}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+            {language === 'az' ? 'Seçilmişlər' : language === 'en' ? 'Selected' : 'Выбранные'}
+            {(filteredRegions.length > 0 || filteredClusters.length > 0) && (
+              <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-xs font-semibold text-white bg-[#2A534F] rounded-full">
+                {filteredRegions.length + filteredClusters.length}
+              </span>
+            )}
+          </h3>
+          {(filteredRegions.length > 0 || filteredClusters.length > 0) && (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClearAll();
+              }}
+              className="text-red-500 text-sm border border-red-500 px-[8px] py-[4px] rounded-full hover:bg-red-500 hover:text-white transition-colors flex items-center gap-1"
+            >
+              {language === 'az' ? 'Hamısını sil' : language === 'en' ? 'Clear all' : 'Очистить все'}
+              <RiDeleteBin6Line />
+            </button>
+          )}
+        </div>
 
+        {/* Panel content */}
+        {(filteredRegions.length > 0 || filteredClusters.length > 0) ? (
+          <div className="p-4 flex flex-col gap-3">
             {/* Regions Section */}
             {getSelectedFilterNames().regions.length > 0 && (
               <div className="flex flex-col gap-2">
@@ -296,7 +343,7 @@ export const MapSVG = ({
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {getSelectedFilterNames().regions.map((name, index) => (
-                    <span key={`region-${index}`} className="bg-[#2A534F] text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                    <span key={`region-${index}`} className="bg-white text-[#2A534F] px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-[#2A534F]">
                       {name}
                       <button
                         onClick={() => handleRemoveRegion(name)}
@@ -320,7 +367,7 @@ export const MapSVG = ({
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {getSelectedFilterNames().clusters.map((name, index) => (
-                    <span key={`cluster-${index}`} className="bg-[#2A534F] text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                    <span key={`cluster-${index}`} className="bg-white text-[#2A534F] px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-[#2A534F]">
                       {name}
                       <button
                         onClick={() => handleRemoveCluster(name)}
@@ -336,7 +383,11 @@ export const MapSVG = ({
               </div>
             )}
           </div>
-        ) : null}
+        ) : (
+          <div className="p-4 text-center text-gray-500 text-sm">
+            {language === 'az' ? 'Heç bir filtr seçilməyib' : language === 'en' ? 'No filters selected' : 'Фильтры не выбраны'}
+          </div>
+        )}
       </div>
 
       <svg

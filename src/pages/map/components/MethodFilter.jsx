@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedClusters, resetTrigger }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const MethodFilter = ({ 
+  onMethodsChange, 
+  data, 
+  selectedRegions, 
+  selectedClusters, 
+  resetTrigger,
+  openFilter,
+  setOpenFilter,
+  filterId
+}) => {
   const [selectedMethods, setSelectedMethods] = useState([]);
   const { language } = useLanguageStore();
+  
+  // Check if this filter is open based on parent state
+  const isOpen = openFilter === filterId;
   
   useEffect(() => {
     setSelectedMethods([]);
   }, [resetTrigger]);
+
+  const toggleFilter = () => {
+    // If already open, close it. Otherwise open this one (which closes others)
+    setOpenFilter(isOpen ? null : filterId);
+  };
 
   const getAvailableMethods = () => {
     if (!data) return [];
@@ -57,7 +73,7 @@ export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedC
   return (
     <div className="relative tablet:w-[50%] mobile:w-full">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleFilter}
         className="bg-[#2A534F] rounded-[4px] shadow-lg px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
       >
         <span className="text-[12px] font-semibold text-[white]">
@@ -77,7 +93,7 @@ export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedC
 
       {isOpen && (
         <div 
-          className="absolute top-full left-0 w-full mt-2 bg-[rgba(255,255,255,.8)] rounded-lg shadow-lg mobile:p-2 lg:p-4"
+          className="absolute top-full left-0 w-full mt-1 bg-[rgba(255,255,255,.8)] rounded-lg shadow-lg mobile:p-2 lg:p-4 z-[1000]"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
@@ -93,7 +109,7 @@ export const MethodFilter = ({ onMethodsChange, data, selectedRegions, selectedC
                   type="checkbox"
                   checked={selectedMethods.includes(method.id)}
                   onChange={(event) => handleCheckboxChange(method.id, event)}
-                  className="mobile:w-[12px] mobile:h-[12px] lg:w-4 lg:h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
+                  className="mobile:w-3 mobile:h-3 lg:w-4 lg:h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
                 />
               </label>
             ))}
@@ -122,5 +138,8 @@ MethodFilter.propTypes = {
   data: PropTypes.array.isRequired,
   selectedRegions: PropTypes.arrayOf(PropTypes.number).isRequired,
   selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired,
-  resetTrigger: PropTypes.bool.isRequired
+  resetTrigger: PropTypes.bool.isRequired,
+  openFilter: PropTypes.string,
+  setOpenFilter: PropTypes.func.isRequired,
+  filterId: PropTypes.string.isRequired
 }; 

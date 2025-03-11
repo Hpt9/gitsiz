@@ -197,7 +197,7 @@ export const Navbar = () => {
 
   return (
     <div className="relative">
-      <div className="bg-[#30615C] w-full h-[64px] mt-[16px] flex items-center justify-between px-[16px] lg:px-[130px]">
+      <div className="bg-[#30615C] w-full h-[64px] mt-[16px] flex items-center mobile:justify-between lg:justify-end px-[16px] lg:px-[100px]">
         <p className="text-[rgba(227,227,227,1)] text-[12px] w-[230px]">
           {language === 'az' ? 'Sahibkarlığın inkişafı Azərbaycanın ümumi inkişafının əsas şərtidir' : 
            language === 'en' ? 'Development of entrepreneurship is the main condition for the development of Azerbaijan' : 
@@ -208,7 +208,7 @@ export const Navbar = () => {
           
         </div>
       </div>
-      <div className="flex items-center bg-[rgb(42,83,79)] justify-between px-[130px] py-4 lg:px-[130ps] mobile:flex-row-reverse lg:flex-row relative z-[2000]">
+      <div className="flex items-center bg-[rgb(42,83,79)] justify-between mobile:px-[16px] lg:px-[100px] py-4  mobile:flex-row-reverse lg:flex-row relative z-[2000]">
         <div className="flex items-center gap-6">
           <img src={LOGO} alt="kob_logo" className="mobile:w-[24px] lg:w-[45px]" />
           <div className="hidden lg:flex gap-6">

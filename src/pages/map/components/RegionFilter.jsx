@@ -2,10 +2,22 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
 
-export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selectedMethods, resetTrigger, selectedRegions: externalSelectedRegions }) => {
+export const RegionFilter = ({ 
+  onRegionsChange, 
+  data, 
+  selectedClusters, 
+  selectedMethods, 
+  resetTrigger, 
+  selectedRegions: externalSelectedRegions,
+  openFilter,
+  setOpenFilter,
+  filterId
+}) => {
   const { language } = useLanguageStore();
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedRegions, setSelectedRegions] = useState([]);
+  
+  // Check if this filter is open based on parent state
+  const isOpen = openFilter === filterId;
 
   // Sync with external state (filters from bottom panel)
   useEffect(() => {
@@ -17,6 +29,11 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
   useEffect(() => {
     setSelectedRegions([]);
   }, [resetTrigger]);
+
+  const toggleFilter = () => {
+    // If already open, close it. Otherwise open this one (which closes others)
+    setOpenFilter(isOpen ? null : filterId);
+  };
 
   const getAvailableRegions = () => {
     if (!data) return [];
@@ -69,8 +86,8 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
   return (
     <div className="relative tablet:w-[50%] mobile:w-full">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-[#2A534F] rounded-[4px] shadow-lg px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
+        onClick={toggleFilter}
+        className="bg-[#2A534F] rounded-[4px] px-[12px] py-[11px] mobile:w-full tablet:w-[200px] lg:w-[280px] flex justify-between gap-x-[8px] items-center"
       >
         <span className="text-[12px] font-semibold text-[white]">
           {language === 'az' ? 'İqtisadi Rayon' : 
@@ -89,7 +106,7 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
 
       {isOpen && (
         <div 
-          className="absolute top-full z-[1000] left-0 w-full mt-1 bg-[rgba(255,255,255,.8)] rounded-lg shadow-lg p-4"
+          className="absolute top-full z-[1000] left-0 w-full mt-1 bg-[rgba(255,255,255,.8)] rounded-lg shadow-lg p-2"
           onClick={(e) => e.stopPropagation()} // Prevent clicks inside from closing dropdown
         >
           <div className="space-y-2 mobile:max-h-[200px] lg:max-h-[400px] overflow-y-auto custom-scrollbar">
@@ -105,7 +122,7 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
                   type="checkbox"
                   checked={selectedRegions.includes(region.id)}
                   onChange={(e) => handleCheckboxChange(region.id, e)}
-                  className="w-4 h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
+                  className="mobile:w-3 mobile:h-3 lg:w-4 lg:h-4 text-[#2A534F] border-gray-300 rounded focus:ring-[#2A534F]"
                 />
               </label>
             ))}
@@ -135,5 +152,8 @@ RegionFilter.propTypes = {
   selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired,
   selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
   resetTrigger: PropTypes.bool.isRequired,
-  selectedRegions: PropTypes.arrayOf(PropTypes.number)
+  selectedRegions: PropTypes.arrayOf(PropTypes.number),
+  openFilter: PropTypes.string,
+  setOpenFilter: PropTypes.func.isRequired,
+  filterId: PropTypes.string.isRequired
 }; 

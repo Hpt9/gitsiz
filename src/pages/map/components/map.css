@@ -65,6 +65,16 @@ path {
 /* Add some bottom padding to the map container on mobile to account for the selected filters panel */
 @media (max-width: 768px) {
   .map_container {
+    padding-bottom: 42px; /* Height of the collapsed header */
+    transition: padding-bottom 0.3s ease;
+  }
+  
+  .map_container:has(+ div:not(.translate-y-\[calc\(100\%-42px\)\])) {
     padding-bottom: 120px;
   }
+}
+
+/* Add smooth transition for panel collapse */
+.translate-y-\[calc\(100\%-42px\)\] {
+  transform: translateY(calc(100% - 42px));
 }

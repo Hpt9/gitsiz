@@ -64,7 +64,7 @@ export const MapPage = () => {
 
   return (
     <div className="w-full">
-      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[130px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
+      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[100px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] leading-[39px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
         {language === 'az' ? 'KOB Klaster xəritəsi' : 
          language === 'en' ? 'SME Cluster Map' : 
@@ -83,9 +83,9 @@ export const MapPage = () => {
                 <motion.div
                   className="flex flex-col gap-y-[120px] justify-center"
                   key="map"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0}}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[#2A534F] mobile:text-left lg:text-center text-[24px] leading-[29px] font-bold">
@@ -105,9 +105,9 @@ export const MapPage = () => {
                 <motion.div
                   key="region"
                   className="w-full flex justify-center items-center"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0}}
                   transition={{ duration: 0.3 }}
                 >
                   <Region 
