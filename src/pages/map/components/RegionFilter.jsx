@@ -2,10 +2,17 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
 
-export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selectedMethods, resetTrigger }) => {
+export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selectedMethods, resetTrigger, selectedRegions: externalSelectedRegions }) => {
   const { language } = useLanguageStore();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRegions, setSelectedRegions] = useState([]);
+
+  // Sync with external state (filters from bottom panel)
+  useEffect(() => {
+    if (externalSelectedRegions !== undefined) {
+      setSelectedRegions(externalSelectedRegions);
+    }
+  }, [externalSelectedRegions]);
 
   useEffect(() => {
     setSelectedRegions([]);
@@ -27,7 +34,7 @@ export const RegionFilter = ({ onRegionsChange, data, selectedClusters, selected
         const region = item.economical_zone[0];
         uniqueRegions.add(JSON.stringify({
           id: region.id,
-          name: region.name.az,
+          name: region.name[language] || region.name.az,
           slug: region.slug
         }));
       }
@@ -127,5 +134,6 @@ RegionFilter.propTypes = {
   data: PropTypes.array.isRequired,
   selectedClusters: PropTypes.arrayOf(PropTypes.number).isRequired,
   selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
-  resetTrigger: PropTypes.bool.isRequired
+  resetTrigger: PropTypes.bool.isRequired,
+  selectedRegions: PropTypes.arrayOf(PropTypes.number)
 }; 

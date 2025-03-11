@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useLanguageStore from '../../../store/languageStore';
-export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selectedMethods, resetTrigger }) => {
+export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selectedMethods, resetTrigger, selectedClusters: externalSelectedClusters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClusters, setSelectedClusters] = useState([]);
   const { language } = useLanguageStore();
+  
+  // Sync with external state (filters from bottom panel)
+  useEffect(() => {
+    if (externalSelectedClusters !== undefined) {
+      setSelectedClusters(externalSelectedClusters);
+    }
+  }, [externalSelectedClusters]);
   
   useEffect(() => {
     setSelectedClusters([]);
@@ -26,7 +33,7 @@ export const ClusterFilter = ({ selectedRegions, onClustersChange, data, selecte
         const cluster = item.cluster[0];
         uniqueClusters.add(JSON.stringify({
           id: cluster.id,
-          name: cluster.name.az
+          name: cluster.name[language] || cluster.name.az
         }));
       }
     });
@@ -125,5 +132,6 @@ ClusterFilter.propTypes = {
   onClustersChange: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   selectedMethods: PropTypes.arrayOf(PropTypes.number).isRequired,
-  resetTrigger: PropTypes.bool.isRequired
+  resetTrigger: PropTypes.bool.isRequired,
+  selectedClusters: PropTypes.arrayOf(PropTypes.number)
 }; 

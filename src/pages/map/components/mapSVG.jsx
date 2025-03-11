@@ -194,12 +194,12 @@ export const MapSVG = ({
   const getSelectedFilterNames = () => {
     const selectedRegions = filteredRegions.map(id => {
       const region = economicalZonesData.find(r => r.id === id);
-      return region?.name[language] || '';
+      return region?.name[language] || region?.name.az || '';
     }).filter(Boolean);
 
     const selectedClusters = filteredClusters.map(id => {
       const cluster = allData.find(item => item.cluster[0].id === id)?.cluster[0];
-      return cluster?.name[language] || '';
+      return cluster?.name[language] || cluster?.name.az || '';
     }).filter(Boolean);
 
     return {
@@ -210,14 +210,18 @@ export const MapSVG = ({
 
   // Add new handlers for individual removals
   const handleRemoveRegion = (regionName) => {
-    const region = economicalZonesData.find(r => r.name[language] === regionName);
+    const region = economicalZonesData.find(r => (r.name[language] === regionName) || (r.name.az === regionName));
     if (region) {
       setFilteredRegions(filteredRegions.filter(id => id !== region.id));
     }
   };
 
   const handleRemoveCluster = (clusterName) => {
-    const cluster = allData.find(item => item.cluster[0].name[language] === clusterName)?.cluster[0];
+    const cluster = allData.find(item => 
+      (item.cluster[0].name[language] === clusterName) || 
+      (item.cluster[0].name.az === clusterName)
+    )?.cluster[0];
+    
     if (cluster) {
       setFilteredClusters(filteredClusters.filter(id => id !== cluster.id));
     }
@@ -246,6 +250,7 @@ export const MapSVG = ({
           selectedClusters={filteredClusters}
           selectedMethods={filteredMethods}
           resetTrigger={resetTrigger}
+          selectedRegions={filteredRegions} // Pass the current selected regions
         />
         <ClusterFilter
           selectedRegions={filteredRegions}
@@ -253,6 +258,7 @@ export const MapSVG = ({
           data={allData}
           selectedMethods={filteredMethods}
           resetTrigger={resetTrigger}
+          selectedClusters={filteredClusters} // Pass the current selected clusters
         />
         <button
           onClick={handleClearAll}
