@@ -600,7 +600,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
           {/* Region Information Text */}
           <div className="mt-4 text-[#2A534F]">
             <div className="flex flex-col">
-              <div className="w-full h-[50px] bg-[#2A534F] text-white flex items-center justify-center">Iqtisadi Rayon Haqqında Məlumatlar</div>
+              <div className="w-full h-[50px] bg-[#2A534F] text-white text-[12px] flex items-center justify-center">Iqtisadi Rayon Haqqında Məlumatlar</div>
               <div className="grid grid-cols-2 grid-rows-1 gap-1 mt-1">
                 <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
                   {language === "az"
