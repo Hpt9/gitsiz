@@ -50,6 +50,7 @@ export const MapSVG = ({
   };
 
   const isRegionActive = (regionId) => {
+    // If no filters selected, show all regions
     if (
       filteredRegions.length === 0 &&
       filteredClusters.length === 0 &&
@@ -58,35 +59,28 @@ export const MapSVG = ({
       return true;
     }
 
+    // Check if there are any items that match ALL selected filters for this region
     return mapData.some((item) => {
       const apiRegionSlug = item.economical_zone[0].slug;
 
+      // Only consider items from the region we're checking
+      if (apiRegionSlug !== regionId) return false;
+      
+      // For each filter type, check if this item matches the filter criteria
       const matchesRegion =
-        filteredRegions.length === 0 ||
-        (apiRegionSlug === regionId &&
-          filteredRegions.includes(item.economical_zone[0].id));
+        filteredRegions.length === 0 || // If no regions filtered, all match
+        filteredRegions.includes(item.economical_zone[0].id);
 
       const matchesCluster =
-        filteredClusters.length === 0 ||
+        filteredClusters.length === 0 || // If no clusters filtered, all match
         filteredClusters.includes(item.cluster[0].id);
 
       const matchesMethod =
-        filteredMethods.length === 0 ||
+        filteredMethods.length === 0 || // If no methods filtered, all match
         filteredMethods.includes(item.method[0].id);
 
-      if (filteredClusters.length > 0) {
-        return matchesCluster && apiRegionSlug === regionId;
-      }
-
-      if (filteredMethods.length > 0) {
-        return (
-          matchesMethod &&
-          (matchesCluster || filteredClusters.length === 0) &&
-          (matchesRegion || filteredRegions.length === 0)
-        );
-      }
-
-      return matchesRegion;
+      // Item must match ALL filter conditions (intersection)
+      return matchesRegion && matchesCluster && matchesMethod;
     });
   };
 

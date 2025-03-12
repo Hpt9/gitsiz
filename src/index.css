@@ -5,53 +5,14 @@
 *{
     font-family: 'Inter', sans-serif !important;
 }
-
-.cls-1 {
-    fill: #2d5650  !important;
+  .cls-3{
+    fill: white !important;
   }
-
-  .cls-2 {
-    fill: #3e6861  !important;
+  .cls-2{
+    fill: #ffffff !important;
   }
-
-  .cls-3 {
-    fill: #42655f  !important;
-  }
-
-  .cls-4 {
-    fill: #22423e  !important;
-  }
-
-  .cls-5 {
-    fill: #395a53  !important;
-  }
-
-  .cls-6 {
-    fill: #17312c  !important;
-  }
-
-  .cls-7 {
-    fill: #050606  !important;
-  }
-
-  .cls-8 {
-    fill: #719d96  !important;
-  }
-
-  .cls-9 {
-    fill: #977f2f  !important;
-  }
-
-  .cls-10 {
-    fill: #668d85  !important;
-  }
-
-  .cls-11 {
-    fill: #749792 !important;
-  }
-
-  .cls-12 {
-    fill: #2a2a2a !important;
+  .cls-7{
+    fill: #255646 !important;
   }
   .blog_header,.faq_header,.home_header{
     background-image: url(./assets/blog_image.svg);

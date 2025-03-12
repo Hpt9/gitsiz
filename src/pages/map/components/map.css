@@ -13,6 +13,11 @@
   cursor: pointer;
 }
 
+/* Add style for text paths */
+text path {
+  fill: red !important; /* Change text paths to red */
+}
+
 path:hover {
   opacity: 0.8;
   cursor: pointer;

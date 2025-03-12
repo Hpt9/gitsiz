@@ -19,17 +19,17 @@ export const Region = ({ regionData, element, setIsRegion }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [zones, setZones] = useState([]);
   const regionColors = {
-    qarabagh: "#22423E",
+    "qarabagh": "#22423E",
     "ganja-dashkasan": "#41655F",
     "qazax-tovuz": "#30504A",
     "quba-xacmaz": "#3D6861",
     "zaqatala-sheki": "#688B84",
     "dagliq-shirvan": "#749792",
     "merkezi-aran": "#385953",
-    baku: "#749792",
+    "baku": "#749792",
     "shirvan-salyan": "#36625D",
     "mil-mughan": "#719D96",
-    naxchivan: "#22423E",
+    "naxchivan": "#22423E",
     "sherqi-zengezur": "#2C5650",
     "lankaran-astara": "#264A43",
     "absheron-xizi": "#22423E",
@@ -382,7 +382,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
   };
 
   return (
-    <div className="flex flex-col gap-y-[20px] w-full max-w-[1920px]">
+    <div className="flex flex-col mobile:gap-y-[20px] lg:gap-y-[64px] w-full max-w-[1920px]">
       {/* Back Button - Absolute positioned on mobile */}
       <div className="relative z-[10] flex items-center justify-between">
         <button

@@ -81,7 +81,7 @@ export const MapPage = () => {
             <AnimatePresence mode="wait">
               {!isRegion ? (
                 <motion.div
-                  className="flex flex-col gap-y-[120px] justify-center"
+                  className="flex flex-col lg:gap-y-[164px] mobile:gap-y-[120px] justify-center"
                   key="map"
                   initial={{ opacity: 0}}
                   animate={{ opacity: 1 }}

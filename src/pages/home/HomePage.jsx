@@ -110,7 +110,7 @@ export const HomePage = () => {
                 const images = JSON.parse(homeData.contents[0].image);
                 const icons = JSON.parse(homeData.contents[0].icon);
                 return images.map((imagePath, index) => (
-                  <div key={index} className="flex p-[8px] mobile:h-[248px] lg:h-[400px] mobile:w-full sm:w-[450px] lg:w-[280px] border border-[rgb(150,125,46)] rounded-tl-[32px] rounded-br-[32px] relative bg-white">
+                  <div key={index} className="flex p-[8px] mobile:h-[248px] lg:h-[300px] mobile:w-full sm:w-[450px] lg:w-[280px] border border-[rgb(150,125,46)] rounded-tl-[32px] rounded-br-[32px] relative bg-white">
                     <div className="mobile:w-full lg:w-full h-full rounded-tl-[26px] rounded-br-[26px] overflow-hidden">
                       <img 
                         src={`${img_url}${imagePath}`} 
@@ -136,7 +136,7 @@ export const HomePage = () => {
         </div>
         <div className="opportunities mobile:hidden lg:flex flex-col items-center  2xl:mt-[50px]"
           style={{
-            marginTop: isExpanded ? '290px' : '200px'
+            marginTop: isExpanded ? '290px' : '100px'
           }}
         >
           <span className="text-[20px] w-[407px] text-center text-[rgb(112,112,112)] relative left-[-43px] ">

@@ -43,7 +43,7 @@ export const Footer = () => {
           };
         });
 
-        console.log("Transformed menus:", transformedMenus); // Debug log
+        //console.log("Transformed menus:", transformedMenus); // Debug log
         setFooterMenus(transformedMenus);
       } catch (error) {
         console.error("Error fetching footer menus:", error);

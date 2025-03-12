@@ -5,7 +5,7 @@ import { base_url, img_url } from "../../components/expoted_images";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import useLanguageStore from '../../store/languageStore';
 import { updatePageTitle } from '../../utils/updatePageTitle';
-
+import { LiaDownloadSolid } from "react-icons/lia";
 export const Blog = () => {
   const { language } = useLanguageStore();
   const { slug } = useParams();
@@ -96,7 +96,7 @@ export const Blog = () => {
             {blogData?.blogs[0]?.blog_title[language]}
           </h3>
           <p
-            className="mobile:text-[14px] lg:text-[18px] text-[rgb(43,82,79)] w-full leading-[20px] mobile:mt-[16px] lg:mt-[40px]"
+            className="mobile:text-[14px] lg:text-[18px] text-[rgb(43,82,79)] w-full mobile:leading-[20px] lg:leading-[25px] mobile:mt-[16px] lg:mt-[40px]"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 isLongText(blogData?.blogs[0]?.blog_description[language]) && !isExpanded
@@ -119,7 +119,10 @@ export const Blog = () => {
               className="bg-[rgba(136,107,31,1)] text-white px-[20px] py-[10px] rounded-full w-fit text-center flex items-center justify-center gap-x-[10px] mt-[15px]"
             >
               {blogData?.blogs[0]?.blog_link_text[language]}{" "}
-              <MdOutlineDownloadForOffline className="text-[30px]" />
+              <div className="bg-[white] rounded-full flex items-center justify-center w-[26px] h-[26px]">
+              <LiaDownloadSolid className="text-[20px] text-[#886B1F]" />
+              </div>
+
             </a>
           )}
         </div>
