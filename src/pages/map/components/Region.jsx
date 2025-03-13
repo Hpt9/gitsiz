@@ -248,15 +248,15 @@ export const Region = ({ regionData, element, setIsRegion }) => {
     return (
       <div className="bg-white/10">
         <div className="grid grid-cols-2 grid-rows-9 gap-1">
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          {/* <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Ümumi əhali"
               : language === "en"
               ? "Total population"
               : "Общее население"}
             : {totals.population} min
-          </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          </p> */}
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Uşaqların sayı"
               : language === "en"
@@ -264,7 +264,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Количество детей"}
             : {totals.children} min
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Gənclərin sayı"
               : language === "en"
@@ -272,39 +272,39 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Количество молодежи"}
             : {totals.young_people} min
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Təqaüdçülərin sayı"
+              ? "Pensiyaçıların sayı"
               : language === "en"
               ? "Number of pensioners"
               : "Количество пенсионеров"}
             : {totals.pensioners}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "İşçilərin sayı"
+              ? "Muzdlu işçilərin sayı (min nəfər)"
               : language === "en"
               ? "Number of workers"
               : "Количество работников"}
             : {totals.paid_workers} min
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Özünüməşğul şəxslərin sayı"
+              ? "Qeydiyyatda olan fərdi sahibkarların sayı"
               : language === "en"
               ? "Number of self-employed"
               : "Количество самозанятых"}
             : {totals.self_employed}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Tələbələrin sayı"
+              ? "Tədris ilinin əvvəlində ümumi təhsil müəssisələrində şagirdlərin sayı"
               : language === "en"
               ? "Number of students"
               : "Количество студентов"}
             : {totals.students}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Orta aylıq əmək haqqı"
               : language === "en"
@@ -312,7 +312,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Средняя месячная зарплата"}
             : {totals.avg_salary} ₼
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Mikro müəssisələr"
               : language === "en"
@@ -320,7 +320,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Микропредприятия"}
             : {totals.micro_enterprises}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Kiçik müəssisələr"
               : language === "en"
@@ -328,7 +328,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Малые предприятия"}
             : {totals.small_enterprises}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Orta müəssisələr"
               : language === "en"
@@ -336,23 +336,23 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Средние предприятия"}
             : {totals.middle_enterprises}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Böyük müəssisələr"
+              ? "Iri müəssisələr"
               : language === "en"
               ? "Large enterprises"
               : "Крупные предприятия"}
             : {totals.large_enterprises}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Motellərin sayı"
+              ? "Mehmanxanaların sayı"
               : language === "en"
               ? "Number of motels"
               : "Количество мотелей"}
             : {totals.motels}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Ümumi dövriyyə"
               : language === "en"
@@ -360,15 +360,15 @@ export const Region = ({ regionData, element, setIsRegion }) => {
               : "Общий оборот"}
             : {totals.total_circulation.toFixed(1)}
           </p>
-          <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+          <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
-              ? "Pərakəndə satış dövriyyəsi"
+              ? "Pərakəndə ticarət dövriyyəsi"
               : language === "en"
               ? "Retail sales turnover"
               : "Оборот розничной торговли"}
             : {totals.retail_sale}
           </p>
-            <p className="text-[12px] h-[50px] p-[10px] pl-[16px] flex items-center">
+            <p className="mobile:text-[12px] lg:text-[14px] h-[50px] p-[10px] pl-[16px] flex items-center">
             {language === "az"
               ? "Əhaliyə göstərilən ödənişli xidmətlər"
               : language === "en"
@@ -600,9 +600,9 @@ export const Region = ({ regionData, element, setIsRegion }) => {
           {/* Region Information Text */}
           <div className="mt-4 text-[#2A534F]">
             <div className="flex flex-col">
-              <div className="w-full h-[50px] bg-[#2A534F] text-white text-[12px] flex items-center justify-center">Iqtisadi Rayon Haqqında Məlumatlar</div>
+              <div className="w-full h-[50px] bg-[#2A534F] text-white mobile:text-[12px] lg:text-[14px] flex items-center justify-center">Iqtisadi Rayon Haqqında Məlumatlar</div>
               <div className="grid grid-cols-2 grid-rows-1 gap-1 mt-1">
-                <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+                <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
                   {language === "az"
                     ? "Əhalinin sayı"
                     : language === "en"
@@ -610,7 +610,7 @@ export const Region = ({ regionData, element, setIsRegion }) => {
                     : "Численность населения"}{" "}
                   - {regionData[0].economical_zone[0].population}
                 </p>
-                <p className="text-[12px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
+                <p className="mobile:text-[12px] lg:text-[14px] mb-1 h-[50px] p-[10px] pl-[16px] flex items-center">
                   {language === "az"
                     ? "Əhalinin sıxlığı"
                     : language === "en"

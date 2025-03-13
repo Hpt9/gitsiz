@@ -79,7 +79,7 @@ export const Blog = () => {
   
   return (
     <div className="flex flex-col min-h-[700px] w-full">
-      <div className="blog_header w-full mobile:pt-[0px] mobile:pb-[64px] mobile:px-[16px] lg:px-[130px] lg:py-[100px] bg-[rgb(42,83,79)]">
+      <div className="blog_header w-full mobile:pt-[0px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)]">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold  text-[rgb(255,255,255)]">
           {blogData?.title[language]}
         </h1>

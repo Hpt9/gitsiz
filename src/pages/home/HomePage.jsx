@@ -48,7 +48,7 @@ export const HomePage = () => {
 
   return (
     <div className="">
-      <div className="home_header relative mobile:h-fit mobile:pt-[0px] mobile:pb-[32px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] lg:px-[130px] bg-[rgb(42,83,79)]">
+      <div className="home_header relative mobile:h-fit mobile:pt-[0px] mobile:pb-[32px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)]">
         {/* <img
           src={BG_IMAGE}
           alt=""

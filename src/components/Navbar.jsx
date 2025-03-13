@@ -208,10 +208,10 @@ export const Navbar = () => {
           
         </div>
       </div>
-      <div className="flex items-center bg-[rgb(42,83,79)] justify-between mobile:px-[16px] lg:px-[100px] py-4  mobile:flex-row-reverse lg:flex-row relative z-[2000]">
-        <div className="flex items-center gap-6">
+      <div className="flex items-center bg-[rgb(42,83,79)] justify-between mobile:px-[16px] lg:px-[50px] xl:px-[100px] py-4  mobile:flex-row-reverse lg:flex-row relative z-[2000]">
+        <div className="flex items-center gap-x-[64px]">
           <img src={LOGO} alt="kob_logo" className="mobile:w-[24px] lg:w-[45px]" />
-          <div className="hidden lg:flex gap-6">
+          <div className="hidden lg:flex lg:gap-5 xl:gap-9">
           {navbarMenus.map((menu, index) =>
               menu.is_dropdown ? (
                 <CustomDropDown key={index} name={menu.name} options={menu.options} isLanguage={false} />

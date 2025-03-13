@@ -138,7 +138,7 @@ export const Contact = () => {
   return (
     <div className="w-full">
       <ToastContainer />
-      <div className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[130px] lg:py-[100px] bg-[rgb(42,83,79)] relative">
+      <div className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
           {language === 'az' ? 'Əlaqə' : language === 'en' ? 'Contact' : 'Контакты'}
         </h1>
