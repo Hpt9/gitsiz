@@ -182,3 +182,18 @@
       height: 100px;
       background-color: red;
     }
+
+
+    .st0{fill:#255646;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st1{fill:#ffffff;}
+	.st2{fill:#6F9C77;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round;}
+	.st3{fill:#0A7B5F;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st4{fill:#0A7B5F;}
+  
+  #AZGOY:hover,#AZUCA:hover,#AZNA:hover{
+    fill: #3B957F;
+  }
+  #Layer_1 > g > g:nth-child(7){
+    position: relative;
+    left: 100px !important;
+  }
