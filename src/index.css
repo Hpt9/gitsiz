@@ -190,10 +190,6 @@
 	.st3{fill:#0A7B5F;stroke:#FFFFFF;stroke-miterlimit:10;}
 	.st4{fill:#0A7B5F;}
   
-  #AZGOY:hover,#AZUCA:hover,#AZNA:hover{
+  #AZGOY:hover,#AZUCA:hover,#AZNA:hover,#AZNX:hover,#AZMI:hover,#AZXA:hover{
     fill: #3B957F;
-  }
-  #Layer_1 > g > g:nth-child(7){
-    position: relative;
-    left: 100px !important;
   }
