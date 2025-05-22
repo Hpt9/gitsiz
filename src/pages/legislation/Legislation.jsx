@@ -44,6 +44,7 @@ export const Legislation = () => {
   return (
     <div className="w-full">
       <div className="blog_header mobile:h-fit mobile:pb-[64px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] mobile:pt-[0px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)] relative">
+        <div className="flex flex-col items-start justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)] relative z-[2]">
           {legislationData.title[language]}
         </h1>
@@ -53,6 +54,7 @@ export const Legislation = () => {
             __html: DOMPurify.sanitize(legislationData.description[language]),
           }}
         ></p>
+        </div>
       </div>
       <div className="legislation_body flex flex-col">
         <div className="flex items-center justify-center mobile:flex-col mobile:gap-y-[64px] xl:flex-row xl:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">

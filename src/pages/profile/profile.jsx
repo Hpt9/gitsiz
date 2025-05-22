@@ -1,18 +1,67 @@
-import { useState } from 'react';
-import { FaPersonRifle } from 'react-icons/fa6';
-
+import { useState, useEffect } from 'react';
+// import { FaPersonRifle } from 'react-icons/fa6'; // Remove unused import
+import useUserStore from '../../store/userStore';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { base_url } from '../../components/expoted_images';
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const fetchUserProfile = useUserStore(state => state.fetchUserProfile);
+  const user = useUserStore(state => state.user);
+  const setUser = useUserStore(state => state.setUser);
+  const navigate = useNavigate();
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
+
+  // Redirect to login if not logged in
+  useEffect(() => {
+    if (localStorage.getItem('token') === null) {
+      navigate('/daxil-ol');
+    }
+  }, [user, navigate]);
+
+  // Local state for editing, initialized from user data
   const [profileData, setProfileData] = useState({
-    fullName: 'Araz Sattarov',
-    email: 'arazsattarov@gmail.com',
-    phone: '+994501234567'
+    fullName: '',
+    email: '',
+    phone: ''
   });
 
-  const handleEdit = () => {
+  // Update local state when user data changes
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        fullName: user.name || '',
+        email: user.email || '',
+        phone: user.phone || ''
+      });
+    }
+  }, [user]);
+
+  const handleEdit = async () => {
     if (isEditing) {
-      // Save changes here
-      // You can make an API call to update the data
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.put(
+          `${base_url}/user/edit`,
+          {
+            name: profileData.fullName,
+            email: profileData.email,
+            phone: profileData.phone
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(response.data); // update user in store if needed
+      } catch (error) {
+        console.error('Profile update error:', error);
+      }
     }
     setIsEditing(!isEditing);
   };
@@ -24,6 +73,8 @@ export const Profile = () => {
       [name]: value
     }));
   };
+
+  if (!user) return null;
 
   return (
     <div className="w-full max-w-[1920px] lg:px-[170px] lg:py-[64px]">
@@ -53,11 +104,6 @@ export const Profile = () => {
                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
               </svg>
             </div>
-            {isEditing && (
-              <button className="text-[14px] text-[#2A534F] hover:text-[#1a3331]">
-                <FaPersonRifle size={24} />
-              </button>
-            )}
           </div>
 
           <div className="w-full space-y-[16px]">
@@ -122,15 +168,6 @@ export const Profile = () => {
                 Yadda saxla
               </button>
             </div>
-          )}
-
-          {!isEditing && (
-            <button
-              onClick={() => {/* Handle logout */}}
-              className="text-red-500 hover:text-red-600"
-            >
-              Çıxış
-            </button>
           )}
         </div>
       </div>

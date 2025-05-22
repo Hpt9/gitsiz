@@ -139,9 +139,11 @@ export const Contact = () => {
     <div className="w-full">
       <ToastContainer />
       <div className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative">
+        <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
           {language === 'az' ? 'Əlaqə' : language === 'en' ? 'Contact' : 'Контакты'}
         </h1>
+        </div>
         {/* <img
           src={BG_IMAGE}
           alt=""

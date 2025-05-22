@@ -15,7 +15,17 @@ export const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
+  var twoSum = function(nums, target) {
+    for(let num in nums){
+        for(let mun in nums){
+            if(num+mun==target){
+                console.log([num,mun])
+            }
+        }
+    }
+};
 
+twoSum([2,7,11,15],9)
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
@@ -54,6 +64,7 @@ export const HomePage = () => {
           alt=""
           className="absolute right-0 bottom-0 mobile:h-[307px] lg:h-[1024px]"
         /> */}
+        <div className="flex flex-col items-start justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:w-[224px] lg:w-[500px] text-white mobile:text-[32px] lg:text-[61px] font-bold lg:leading-[65px]">
           {homeData.title[language]}
         </h1>
@@ -71,6 +82,7 @@ export const HomePage = () => {
               {button.text[language] || button.text.az}
             </button>
           ))}
+        </div>
         </div>
       </div>
       <div className="home_info items-center  w-full mobile:gap-y-[64px] lg:gap-y-[175px] 2xl:gap-y-[50px] mobile:px-[16px] lg:px-[100px] 2xl:px-[175px] mobile:py-[32px] lg:py-[150px] 2xl:py-[200px] flex flex-col ">

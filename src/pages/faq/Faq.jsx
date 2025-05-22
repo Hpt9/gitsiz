@@ -47,9 +47,11 @@ export const Faq = () => {
     <div className="w-full">
       <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
 
+        <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold  text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[500px]">
         {language === 'az' ? 'Ən çox verilən suallar' : language === 'en' ? 'Frequently Asked Questions' : 'Часто задаваемые вопросы'}
         </h1>
+        </div>
         {/* <img
           src={BG_IMAGE}
           alt=""

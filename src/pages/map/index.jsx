@@ -65,11 +65,13 @@ export const MapPage = () => {
   return (
     <div className="w-full">
       <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
+        <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] leading-[39px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
         {language === 'az' ? 'KOB Klaster xəritəsi' : 
          language === 'en' ? 'SME Cluster Map' : 
          'КОБ Кластер карта'}
         </h1>
+        </div>
       </div>
       <div className="w-full flex flex-col relative left-[50%] translate-x-[-50%] mobile:px-[16px] mobile:py-[32px] lg:py-[64px] lg:px-[90px] 2xl:px-[170px] lg:pt-[74px] lg:gap-y-[80px]">
         <div className="w-full relative">

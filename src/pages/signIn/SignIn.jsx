@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
+import axios from 'axios';
+import useUserStore from '../../store/userStore';
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ export const SignIn = () => {
     password: ''
   });
   const navigate = useNavigate();
+  const fetchUserProfile = useUserStore(state => state.fetchUserProfile);
 
   const handleChange = (e) => {
     setFormData({
@@ -16,14 +19,23 @@ export const SignIn = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    //console.log(formData);
+    try {
+      const response = await axios.post('https://kobklaster.tw1.ru/api/login', formData);
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem('token', token);
+        await fetchUserProfile();
+        navigate('/'); // Redirect to home or dashboard
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   return (
-    <div className="w-full  flex justify-center items-center py-[32px]">
+    <div className="w-full  flex justify-center items-center py-[32px] lg:h-[calc(100vh-492px)]">
       <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
         <h1 className="text-left text-[24px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin
