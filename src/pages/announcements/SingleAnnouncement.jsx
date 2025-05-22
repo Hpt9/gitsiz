@@ -5,6 +5,35 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+// Minimalist custom arrows for react-slick
+const ArrowLeft = (props) => (
+  <button
+    {...props}
+    type="button"
+    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
+    style={{ ...props.style, display: 'block' }}
+    aria-label="Previous"
+  >
+    <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </button>
+);
+
+const ArrowRight = (props) => (
+  <button
+    {...props}
+    type="button"
+    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
+    style={{ ...props.style, display: 'block' }}
+    aria-label="Next"
+  >
+    <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </button>
+);
+
 export const SingleAnnouncement = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // id is actually the slug
@@ -58,7 +87,24 @@ export const SingleAnnouncement = () => {
     }
 
     const imagesArr = getImagesArray(announcement.images);
-    const sliderImages = imagesArr.length > 0 ? imagesArr : (announcement.cover_photo ? [announcement.cover_photo] : []);
+    // Parse cover images (could be a stringified array or a single string)
+    let coverImages = [];
+    if (announcement.cover_photo) {
+      if (typeof announcement.cover_photo === 'string' && announcement.cover_photo.startsWith('[')) {
+        try {
+          coverImages = JSON.parse(announcement.cover_photo);
+        } catch {
+          coverImages = [];
+        }
+      } else {
+        coverImages = [announcement.cover_photo];
+      }
+    }
+    // Combine cover images and images array, but avoid duplicates
+    const sliderImages = [
+      ...coverImages,
+      ...imagesArr.filter(img => !coverImages.includes(img)),
+    ];
     const getImageUrl = (img) =>
         img.startsWith('http')
             ? img
@@ -69,6 +115,8 @@ export const SingleAnnouncement = () => {
         slidesToShow: 1,
         slidesToScroll: 1,
         arrows: true,
+        prevArrow: <ArrowLeft />,
+        nextArrow: <ArrowRight />,
         autoplay: false,
     };
 
