@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const CustomSelect = ({ value, onChange, options, placeholder, className = "", isMulti = false, openDirection = "down" }) => {
+  
   const [isOpen, setIsOpen] = useState(false);
   const { language } = useLanguageStore();
   const dropdownRef = useRef(null);
@@ -105,6 +108,7 @@ CustomSelect.propTypes = {
 };
 
 export const PlaceAnnoucement = () => {
+  const token = localStorage.getItem('token');
   const { loggedIn } = loggedStore();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -249,11 +253,10 @@ export const PlaceAnnoucement = () => {
         formDataToSend.append('zones[]', zoneId);
       });
 
-      // Append files
+      // Append cover_photo and images as files
       if (formData.cover_photo) {
         formDataToSend.append('cover_photo', formData.cover_photo);
       }
-      
       if (formData.images.length > 0) {
         formData.images.forEach(image => {
           formDataToSend.append('images[]', image);
@@ -263,11 +266,20 @@ export const PlaceAnnoucement = () => {
       const response = await axios.post('https://kobklaster.tw1.ru/api/adverts/create', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
 
       if (response.data) {
-        navigate('/elanlar'); // Redirect to announcements page after successful creation
+        toast.success(
+          language === "az"
+            ? "Elan uğurla yerləşdirildi!"
+            : language === "en"
+            ? "Announcement placed successfully!"
+            : "Объявление успешно размещено!",
+          { position: "top-center", autoClose: 3000 }
+        );
+        setTimeout(() => navigate('/elanlar'), 1000);
       }
     } catch (error) {
       console.error('Error creating announcement:', error);
@@ -284,6 +296,7 @@ export const PlaceAnnoucement = () => {
 
   return (
     <div className="w-full min-h-[calc(100vh-492px)]">
+      <ToastContainer />
       <div className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
         <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[700px]">
           {language === "az"

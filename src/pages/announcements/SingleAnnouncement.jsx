@@ -1,6 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useLanguageStore from "../../store/languageStore";
 import { useEffect, useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export const SingleAnnouncement = () => {
     const navigate = useNavigate();
@@ -10,13 +13,17 @@ export const SingleAnnouncement = () => {
     const [announcement, setAnnouncement] = useState(null);
     const [similarAnnouncements, setSimilarAnnouncements] = useState([]);
 
-    const getFirstImage = (imagesString) => {
-        try {
-            const images = JSON.parse(imagesString);
-            return images[0] ? `https://kobklaster.tw1.ru/storage/${images[0]}` : null;
-        } catch {
-            return null;
+    const getImagesArray = (images) => {
+        if (!images) return [];
+        if (typeof images === 'string' && images.startsWith('[')) {
+            try {
+                return JSON.parse(images);
+            } catch {
+                return [];
+            }
         }
+        if (Array.isArray(images)) return images;
+        return [];
     };
 
     useEffect(() => {
@@ -50,6 +57,21 @@ export const SingleAnnouncement = () => {
         return null;
     }
 
+    const imagesArr = getImagesArray(announcement.images);
+    const sliderImages = imagesArr.length > 0 ? imagesArr : (announcement.cover_photo ? [announcement.cover_photo] : []);
+    const getImageUrl = (img) =>
+        img.startsWith('http')
+            ? img
+            : `https://kobklaster.tw1.ru/storage/${img.replace(/^adverts\//, 'adverts/')}`;
+    const sliderSettings = {
+        infinite: true,
+        dots: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        autoplay: false,
+    };
+
     return (
         <div className="w-full max-w-[1920px] mx-auto min-h-[calc(100vh-492px)] py-8 px-4 lg:px-[50px] xl:px-[100px]">
             {/* Back Button */}
@@ -69,98 +91,90 @@ export const SingleAnnouncement = () => {
                 </svg>
             </button>
 
-            <div className="w-full max-w-[1200px] mx-auto">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left Side - Image */}
-                    <div className="lg:w-1/2">
-                        <div className="aspect-[4/3] bg-[#2A534F] rounded-[16px] relative overflow-hidden">
-                            {announcement.images && (
+            <div className="w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-8">
+                {/* Image Slider */}
+                <div className="w-full lg:w-1/2">
+                    <Slider {...sliderSettings}>
+                        {sliderImages.map((img, idx) => (
+                            <div key={idx} className="aspect-[4/3] bg-[#2A534F] flex items-center justify-center">
                                 <img
-                                    src={getFirstImage(announcement.images)}
+                                    src={getImageUrl(img)}
                                     alt={announcement.name}
-                                    className="w-full h-full object-cover"
-                                    onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                                    className="w-full h-full object-cover rounded-lg"
                                 />
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
+                <div className="flex-1">
+                    <div className="mb-4">
+                        <h2 className="text-2xl font-bold text-[#2A534F] mb-2">
+                            {announcement.name}
+                        </h2>
+                        <div className="text-[#2A534F] font-medium">
+                            {announcement.user?.name}
+                        </div>
+                        <div className="text-gray-500 text-sm mb-1">
+                            {new Date(announcement.created_at).toLocaleDateString()}
+                        </div>
+                        <div className="text-gray-600 text-sm mb-1">
+                            {announcement.cluster?.name}
+                        </div>
+                        <div className="text-gray-600 text-sm mb-1">
+                            {announcement.service_name}
+                        </div>
+                        <div className="text-gray-600 text-sm mb-1">
+                            {announcement.text && (
+                                <span dangerouslySetInnerHTML={{ __html: announcement.text }} />
                             )}
-                            <h1 className="absolute bottom-4 left-4 text-4xl font-bold text-white">
-                                {announcement.name}
-                            </h1>
                         </div>
-                    </div>
-
-                    {/* Right Side - Details */}
-                    <div className="lg:w-1/2">
-                        <div className="mb-4">
-                            <h2 className="text-xl font-semibold text-[#2A534F]">{announcement.user?.name}</h2>
-                            <p className="text-gray-600">{announcement.service_name}</p>
-                            <p className="text-gray-500 text-sm">{new Date(announcement.created_at).toLocaleDateString()}</p>
-                        </div>
-
-                        {/* Two Column List */}
-                        <div className="grid grid-cols-2 gap-x-8 gap-y-2 mb-6">
-                            <div>
-                                <p className="text-[#2A534F]">{announcement.cluster?.name}</p>
-                                {/* If you have region info, add here */}
-                            </div>
-                            <div>
-                                {/* Add more info if needed */}
-                            </div>
-                        </div>
-
-                        {/* Description */}
-                        <div className="text-gray-700 mb-6" dangerouslySetInnerHTML={{ __html: announcement.text }} />
-
-                        {/* Contact Info */}
-                        {announcement.user?.phone && (
-                            <div className="mb-4">
-                                <span className="font-semibold">Phone: </span>{announcement.user.phone}
-                            </div>
-                        )}
                         {announcement.website && (
-                            <div className="mb-4">
-                                <span className="font-semibold">Website: </span>
-                                <a href={announcement.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{announcement.website}</a>
+                            <div className="text-gray-600 text-sm mb-1">
+                                <span className="font-bold">Website: </span>
+                                <a href={announcement.website} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+                                    {announcement.website}
+                                </a>
                             </div>
                         )}
                     </div>
                 </div>
-
-                {/* Similar Announcements */}
-                {similarAnnouncements.length > 0 && (
-                    <div className="mt-12">
-                        <h3 className="text-xl font-semibold text-[#2A534F] mb-4">
-                            {language === "az" ? "Bənzər elanlar" : 
-                             language === "en" ? "Similar announcements" : 
-                             "Похожие объявления"}
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            {similarAnnouncements.map((item) => (
-                                <div 
-                                    key={item.id} 
-                                    className="bg-white rounded-[16px] border border-[#A0A0A0] overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                    onClick={() => handleSimilarAnnouncementClick(item.slug)}
-                                >
-                                    <div className="aspect-[4/3] bg-[#2A534F] relative">
-                                        <img
-                                            src={getFirstImage(item.images)}
-                                            alt={item.name}
-                                            className="w-full h-full object-cover"
-                                            onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
-                                        />
-                                        <h2 className="absolute bottom-4 left-4 text-2xl font-bold text-white">
-                                            {item.name}
-                                        </h2>
-                                    </div>
-                                    <div className="p-4">
-                                        <p className="text-[#2A534F] font-medium">{item.service_name}</p>
-                                        <p className="text-sm text-gray-500 mt-2">{new Date(item.created_at).toLocaleDateString()}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
+
+            {/* Similar Announcements */}
+            {similarAnnouncements.length > 0 && (
+                <div className="mt-12">
+                    <h3 className="text-xl font-semibold text-[#2A534F] mb-4">
+                        {language === "az" ? "Bənzər elanlar" : 
+                         language === "en" ? "Similar announcements" : 
+                         "Похожие объявления"}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {similarAnnouncements.map((item) => (
+                            <div 
+                                key={item.id} 
+                                className="bg-white rounded-[16px] border border-[#A0A0A0] overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => handleSimilarAnnouncementClick(item.slug)}
+                            >
+                                <div className="aspect-[4/3] bg-[#2A534F] relative">
+                                    <img
+                                        src={getImageUrl(getImagesArray(item.images)[0] || "")}
+                                        alt={item.name}
+                                        className="w-full h-full object-cover"
+                                        onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                                    />
+                                    <h2 className="absolute bottom-4 left-4 text-2xl font-bold text-white">
+                                        {item.name}
+                                    </h2>
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-[#2A534F] font-medium">{item.service_name}</p>
+                                    <p className="text-sm text-gray-500 mt-2">{new Date(item.created_at).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }; 

@@ -189,14 +189,20 @@ export const Annoucements = () => {
     };
   }, []);
 
-  const getFirstImage = (imagesString) => {
+  const getCoverPhoto = (coverPhoto) => {
+    if (!coverPhoto) return null;
+    let cover = coverPhoto;
     try {
-      const images = JSON.parse(imagesString);
-      return images[0] ? `https://kobklaster.tw1.ru/storage/${images[0]}` : null;
-    } catch (error) {
-      console.error('Error parsing images:', error);
-      return null;
+      if (typeof coverPhoto === 'string' && coverPhoto.startsWith('[')) {
+        const arr = JSON.parse(coverPhoto);
+        if (arr.length > 0) cover = arr[0];
+      }
+    } catch {
+      // ignore
     }
+    return cover.startsWith('http')
+      ? cover
+      : `https://kobklaster.tw1.ru/storage/${cover.replace(/^adverts\//, 'adverts/')}`;
   };
 
   // Add this function to reset all filters
@@ -233,7 +239,7 @@ export const Annoucements = () => {
           >
             <div className="overlay" onClick={(e) => e.stopPropagation()}></div>
             <motion.div
-              className="bg-white h-[600px] rounded-t-[16px] w-full fixed bottom-[-200px] left-0 py-[32px] px-[16px]"
+              className="bg-white h-[650px] rounded-t-[16px] w-full fixed bottom-[-200px] left-0 py-[32px] px-[16px]"
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -338,7 +344,8 @@ export const Annoucements = () => {
                   />
                 </div>
               </div>
-              <div className="w-full flex items-center gap-[12px] mt-[16px]">
+              <div className="w-full flex flex-col items-center gap-[12px] mt-[16px]">
+                <div className="w-full flex items-center gap-[12px]">
                 <button className="w-[50%] h-[40px] bg-[#2A534F] text-[white] rounded-[8px]">
                   Lorem
                 </button>
@@ -346,8 +353,9 @@ export const Annoucements = () => {
                   onClick={toggleMobileFilter}
                   className="w-[50%] h-[40px] bg-[#2A534F] text-[white] rounded-[8px]"
                 >
-                  elanlari goster
+                  Elanları göstər
                 </button>
+                </div>
                 {/* Reset Filters Button for mobile */}
                 <button
                   onClick={handleResetFilters}
@@ -557,9 +565,9 @@ export const Annoucements = () => {
                     onClick={() => handleAnnouncementClick(announcement.slug)}
                   >
                     <div className="aspect-[4/3] bg-[#2A534F] relative">
-                      {announcement.images && (
-                        <img 
-                          src={getFirstImage(announcement.images)} 
+                      {announcement.cover_photo && (
+                        <img
+                          src={getCoverPhoto(announcement.cover_photo)}
                           alt={announcement.name}
                           className="w-full h-full object-cover"
                         />
