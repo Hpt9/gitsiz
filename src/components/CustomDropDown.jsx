@@ -9,7 +9,7 @@ export function CustomDropDown({ name, options, isLanguage = false }) {
       {({ open }) => (
         <>
           <div>
-            <MenuButton className="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 pb-[6px] pt-2 text-sm text-gray-900">
+            <MenuButton className="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md  text-sm text-gray-900">
               <span className="text-white text-[14px]">{name}</span>
               <ChevronDownIcon
                 aria-hidden="true"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useLanguageStore from "../../store/languageStore";
 import { updatePageTitle } from "../../utils/updatePageTitle";
 import { CustomSelect } from "./PlaceAnnoucement";
@@ -30,6 +30,16 @@ export const Annoucements = () => {
   });
   const [zones, setZones] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Debounced live search
+  const searchTimeout = useRef();
+  useEffect(() => {
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      fetchAnnouncements(1, filters);
+    }, 1000);
+    return () => clearTimeout(searchTimeout.current);
+  }, [filters.search]);
 
   useEffect(() => {
     updatePageTitle("Announcements");
@@ -120,8 +130,7 @@ export const Annoucements = () => {
         cluster_ids: customFilters.cluster ? [customFilters.cluster] : [],
         zone_ids: customFilters.zone ? [customFilters.zone] : [],
         economical_zone_ids: customFilters.region ? [customFilters.region] : [],
-        service_name: null,
-        text: null,
+        text: customFilters.search || null,
         page: page
       };
       const response = await axios.post(
@@ -217,6 +226,13 @@ export const Annoucements = () => {
     };
     setFilters(defaultFilters);
     fetchAnnouncements(1, defaultFilters);
+  };
+
+  const handleSearchInput = (e) => {
+    setFilters((prev) => ({
+      ...prev,
+      search: e.target.value,
+    }));
   };
 
   // if (loading && announcements.length === 0) {
@@ -393,6 +409,8 @@ export const Annoucements = () => {
               type="text"
               placeholder="Elan axtar"
               className="w-full h-[48px] rounded-[16px] border border-[#7D7D7D] pl-[40px] pr-[16px] outline-none focus:border-[#2A534F] text-[14px] text-[#7D7D7D]"
+              value={filters.search}
+              onChange={handleSearchInput}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -436,12 +454,14 @@ export const Annoucements = () => {
         {/* Desktop Filters */}
         <div className="w-full max-w-[1920px] mx-auto">
           <div className="w-full flex flex-col gap-y-[12px] justify-between md:mb-[50px] desktop-lg:mb-[0px]">
-            <div className="w-full h-[50px] hidden lg:flex ">
+            <div className="w-full h-[50px] hidden lg:flex gap-x-[16px]">
               <div className="hidden h-[50px] lg:flex w-[600px] relative">
                 <input
                   type="text"
                   placeholder="Elan axtar"
                   className="w-full h-[48px] rounded-[16px] border border-[#7D7D7D] pl-[40px] pr-[16px] outline-none focus:border-[#2A534F] text-[14px] text-[#7D7D7D]"
+                  value={filters.search}
+                  onChange={handleSearchInput}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -458,8 +478,7 @@ export const Annoucements = () => {
                   />
                 </svg>
               </div>
-            </div>
-            <div className="w-full hidden h-[50px] lg:flex  flex-wrap gap-4 mb-8">
+              <div className="w-full hidden h-[50px] lg:flex  flex-wrap gap-4 mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-[129px]">
                   <CustomSelect
@@ -506,7 +525,7 @@ export const Annoucements = () => {
                     openDirection={isMobile ? "up" : "down"}
                   />
                 </div>
-                <div className="min_max w-[288px] flex">
+                {/* <div className="min_max w-[288px] flex">
                   <input
                     type="number"
                     placeholder="Min"
@@ -517,7 +536,7 @@ export const Annoucements = () => {
                     placeholder="Max"
                     className="px-[16px] w-[50%] py-[12px] rounded-tr-[12px] rounded-br-[12px] border border-[#A0A0A0] outline-none focus:border-[#2A534F]"
                   />
-                </div>
+                </div> */}
                 {/* Move Reset Filters Button here */}
                 <button
                   onClick={handleResetFilters}
@@ -532,7 +551,7 @@ export const Annoucements = () => {
                 </button>
               </div>
 
-              <div className="w-[288px] grid grid-cols-3">
+              {/* <div className="w-[288px] grid grid-cols-3">
                 <div className="w-full h-[50px] bg-[white] hover:bg-[#2A534F] text-[#2A534F] hover:text-[white] border border-[#A0A0A0] rounded-l-[8px] flex items-center justify-center">
                   Lorem
                 </div>
@@ -542,8 +561,10 @@ export const Annoucements = () => {
                 <div className="w-full h-[50px] bg-[white] hover:bg-[#2A534F] text-[#2A534F] hover:text-[white] border border-[#A0A0A0] rounded-r-[8px] flex items-center justify-center">
                   Lorem
                 </div>
-              </div>
+              </div> */}
             </div>
+            </div>
+            
 
             {/* Grid of Announcements */}
             <div className="w-full grid mobile:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[24px] mt-[40px]">

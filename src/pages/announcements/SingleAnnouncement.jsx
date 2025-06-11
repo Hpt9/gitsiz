@@ -10,7 +10,7 @@ const ArrowLeft = (props) => (
   <button
     {...props}
     type="button"
-    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
+    className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
     style={{ ...props.style, display: 'block' }}
     aria-label="Previous"
   >
@@ -24,7 +24,7 @@ const ArrowRight = (props) => (
   <button
     {...props}
     type="button"
-    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
+    className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white rounded-full p-1 shadow border border-gray-200"
     style={{ ...props.style, display: 'block' }}
     aria-label="Next"
   >
@@ -120,8 +120,34 @@ export const SingleAnnouncement = () => {
         autoplay: false,
     };
 
+    const similarSliderSettings = {
+        infinite: false,
+        dots: true,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        arrows: true,
+        prevArrow: <ArrowLeft />,
+        nextArrow: <ArrowRight />,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                },
+            },
+            {
+                breakpoint: 640,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                },
+            },
+        ],
+    };
+
     return (
-        <div className="w-full max-w-[1920px] mx-auto min-h-[calc(100vh-492px)] py-8 px-4 lg:px-[50px] xl:px-[100px]">
+        <div className="w-full max-w-[1920px] min-h-[calc(100vh-492px)] py-8 px-4 lg:px-[50px] xl:px-[100px]">
             {/* Back Button */}
             <button 
                 onClick={() => navigate('/elanlar')}
@@ -139,90 +165,102 @@ export const SingleAnnouncement = () => {
                 </svg>
             </button>
 
-            <div className="w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-8">
+            <div className="w-full max-w-[1200px] flex flex-col lg:flex-row gap-8">
                 {/* Image Slider */}
-                <div className="w-full lg:w-1/2">
-                    <Slider {...sliderSettings}>
-                        {sliderImages.map((img, idx) => (
-                            <div key={idx} className="aspect-[4/3] bg-[#2A534F] flex items-center justify-center">
-                                <img
-                                    src={getImageUrl(img)}
-                                    alt={announcement.name}
-                                    className="w-full h-full object-cover rounded-lg"
-                                />
-                            </div>
-                        ))}
-                    </Slider>
+                <div className="w-full lg:w-1/2 flex flex-col items-center">
+                    <div className="w-full h-fit aspect-[4/3] rounded-xl overflow-hidden bg-gray-200 relative asdfg">
+                        <Slider {...sliderSettings} className="h-[450px]">
+                            {sliderImages.map((img, idx) => (
+                                <div key={idx} className="w-full h-full flex items-center justify-center">
+                                    <img
+                                        src={getImageUrl(img)}
+                                        alt={announcement.name}
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
                 </div>
-                <div className="flex-1">
-                    <div className="mb-4">
-                        <h2 className="text-2xl font-bold text-[#2A534F] mb-2">
-                            {announcement.name}
-                        </h2>
-                        <div className="text-[#2A534F] font-medium">
-                            {announcement.user?.name}
+                {/* Info Section */}
+                <div className="flex-1 flex flex-col">
+                    {/* Title and Meta */}
+                    <h2 className="text-3xl font-bold text-[#2A534F] mb-2">{announcement.name}</h2>
+                    <div className="text-[#2A534F] font-medium">{announcement.user?.name}</div>
+                    <div className="text-gray-500 text-sm mb-1">{new Date(announcement.created_at).toLocaleDateString()}</div>
+
+                    {/* Two-column Info Grid */}
+                    <div className="grid grid-cols-2 gap-x-1 gap-y-1 my-4 w-[250px]">
+                        <div className="text-gray-700">Email:</div>
+                        <div className="text-gray-900">{announcement.user?.email}</div>
+                        <div className="text-gray-700">Telefon:</div>
+                        <div className="text-gray-900">{announcement.user?.phone}</div>
+                        <div className="text-gray-700">Klaster:</div>
+                        <div className="text-gray-900">{announcement.cluster?.name}</div>
+                        <div className="text-gray-700">Xidmət:</div>
+                        <div className="text-gray-900">{announcement.service_name}</div>
+                        <div className="text-gray-700">Website:</div>
+                        <div className="text-gray-900 w-full">
+                            <a href={announcement.website} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+                                {announcement.website}
+                            </a>
                         </div>
-                        <div className="text-gray-500 text-sm mb-1">
-                            {new Date(announcement.created_at).toLocaleDateString()}
-                        </div>
-                        <div className="text-gray-600 text-sm mb-1">
-                            {announcement.cluster?.name}
-                        </div>
-                        <div className="text-gray-600 text-sm mb-1">
-                            {announcement.service_name}
-                        </div>
-                        <div className="text-gray-600 text-sm mb-1">
-                            {announcement.text && (
-                                <span dangerouslySetInnerHTML={{ __html: announcement.text }} />
-                            )}
-                        </div>
-                        {announcement.website && (
-                            <div className="text-gray-600 text-sm mb-1">
-                                <span className="font-bold">Website: </span>
-                                <a href={announcement.website} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
-                                    {announcement.website}
-                                </a>
-                            </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="mt-4 text-gray-700">
+                        <span className="font-bold">Açıqlama: </span>
+                        {announcement.text && (
+                            <span dangerouslySetInnerHTML={{ __html: announcement.text }} />
                         )}
                     </div>
                 </div>
             </div>
 
             {/* Similar Announcements */}
-            {similarAnnouncements.length > 0 && (
-                <div className="mt-12">
-                    <h3 className="text-xl font-semibold text-[#2A534F] mb-4">
-                        {language === "az" ? "Bənzər elanlar" : 
-                         language === "en" ? "Similar announcements" : 
-                         "Похожие объявления"}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="mt-12">
+                <h3 className="text-xl font-semibold text-[#2A534F] mb-4">
+                    {language === "az" ? "Bənzər elanlar" : 
+                     language === "en" ? "Similar announcements" : 
+                     "Похожие объявления"}
+                </h3>
+                {similarAnnouncements.length === 0 ? (
+                    <div className="text-gray-500 text-center py-8">
+                        {language === "az"
+                            ? "Oxşar elan yoxdur"
+                            : language === "en"
+                            ? "No similar announcements"
+                            : "Похожих объявлений нет"}
+                    </div>
+                ) : (
+                    <Slider {...similarSliderSettings}>
                         {similarAnnouncements.map((item) => (
-                            <div 
-                                key={item.id} 
-                                className="bg-white rounded-[16px] border border-[#A0A0A0] overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                onClick={() => handleSimilarAnnouncementClick(item.slug)}
-                            >
-                                <div className="aspect-[4/3] bg-[#2A534F] relative">
-                                    <img
-                                        src={getImageUrl(getImagesArray(item.images)[0] || "")}
-                                        alt={item.name}
-                                        className="w-full h-full object-cover"
-                                        onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
-                                    />
-                                    <h2 className="absolute bottom-4 left-4 text-2xl font-bold text-white">
-                                        {item.name}
-                                    </h2>
-                                </div>
-                                <div className="p-4">
-                                    <p className="text-[#2A534F] font-medium">{item.service_name}</p>
-                                    <p className="text-sm text-gray-500 mt-2">{new Date(item.created_at).toLocaleDateString()}</p>
+                            <div key={item.id} className="p-2">
+                                <div 
+                                    className="bg-white rounded-[16px] border border-[#A0A0A0] overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                    onClick={() => handleSimilarAnnouncementClick(item.slug)}
+                                >
+                                    <div className="aspect-[4/3] bg-[#2A534F] relative">
+                                        <img
+                                            src={getImageUrl(item.cover_photo)}
+                                            alt={item.name}
+                                            className="w-full h-full object-cover"
+                                            onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                                        />
+                                        <h2 className="absolute bottom-4 left-4 text-2xl font-bold text-white">
+                                            {item.name}
+                                        </h2>
+                                    </div>
+                                    <div className="p-4">
+                                        <p className="text-[#2A534F] font-medium">{item.service_name}</p>
+                                        <p className="text-sm text-gray-500 mt-2">{new Date(item.created_at).toLocaleDateString()}</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
-                    </div>
-                </div>
-            )}
+                    </Slider>
+                )}
+            </div>
         </div>
     );
 }; 

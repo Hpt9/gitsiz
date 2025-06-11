@@ -28,6 +28,11 @@ export default {
       },
       animation: {
         'slide-up': 'slide-up 0.3s ease-out',
+      },
+      height: {
+        'screen-svh': '100svh',
+        'screen-lvh': '100lvh',
+        'screen-dvh': '100dvh',
       }
     },
   },

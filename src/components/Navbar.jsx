@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -122,6 +122,20 @@ export const Navbar = () => {
   const { language } = useLanguageStore();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+    function handleClickOutside(event) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [profileMenuOpen]);
 
   // Add memoization to prevent unnecessary fetches
   const fetchMenus = React.useCallback(async () => {
@@ -174,6 +188,30 @@ export const Navbar = () => {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    // Check token on mount
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Fetch user profile if token exists
+      useUserStore.getState().fetchUserProfile();
+    } else {
+      setUser(null);
+    }
+
+    // Listen for token changes in other tabs
+    const handleStorage = (event) => {
+      if (event.key === "token") {
+        if (event.newValue) {
+          useUserStore.getState().fetchUserProfile();
+        } else {
+          setUser(null);
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [setUser]);
+
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -214,13 +252,14 @@ export const Navbar = () => {
       </div>
       <div className="flex items-center bg-[rgb(42,83,79)] justify-between mobile:px-[16px] lg:px-[50px] xl:px-[100px] py-4  mobile:flex-row-reverse lg:flex-row relative z-[2000]">
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
-          <div className="flex items-center gap-x-[64px]">
+          <div className="flex items-center xl:gap-x-[50px] 2xl:gap-x-[64px]">
             <img
               src={LOGO}
               alt="kob_logo"
-              className="mobile:w-[24px] lg:w-[45px]"
+              className="mobile:w-[24px] xl:w-[45px]"
+              onClick={() => navigate("/")}
             />
-            <div className="hidden xl:flex lg:gap-5 xl:gap-8">
+            <div className="hidden xl:flex lg:gap-5 xl:gap-6 2xl:gap-8">
               {navbarMenus.map((menu, index) =>
                 menu.is_dropdown ? (
                   <CustomDropDown
@@ -247,6 +286,67 @@ export const Navbar = () => {
               </div>
             </div>
           </div>
+          <div className="items-center gap-x-[16px] hidden xl:flex">
+            {user ? (
+              <>
+                <div className="relative" ref={profileMenuRef}>
+                  <div
+                    onClick={() => setProfileMenuOpen((open) => !open)}
+                    className="w-[50px] h-[50px] rounded-full bg-gray-200 flex items-center justify-center cursor-pointer"
+                  >
+                    <svg
+                      className="w-8 h-8 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  {profileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50 py-2 flex flex-col">
+                      <button
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          navigate("/profile");
+                        }}
+                        className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100"
+                      >
+                        Profil
+                      </button>
+                      <button
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                      >
+                        Çıxış
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-x-[16px]">
+                <button
+                  onClick={() => navigate("/daxil-ol")}
+                  className="text-white text-[14px] cursor-pointer flex items-center"
+                >
+                  Daxil Ol
+                </button>
+                <button
+                  onClick={() => navigate("/qeydiyyat")}
+                  className="text-white text-[14px] cursor-pointer flex items-center"
+                >
+                  Qeydiyyat
+                </button>
+              </div>
+            )}
+          </div>
           <GiHamburgerMenu
             className="w-6 h-6 text-white xl:hidden cursor-pointer z-[1000]"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -268,7 +368,7 @@ export const Navbar = () => {
             <div className="h-[162px] bg-transparent" />
 
             {/* Menu Content */}
-            <motion.div className="w-full h-[calc(100%-162px)] bg-[rgb(42,83,79)] text-white flex flex-col justify-between overflow-hidden pointer-events-auto">
+            <motion.div className="mobile:w-[100%] md:w-[45%] h-[calc(100%-162px)] bg-[rgb(42,83,79)] text-white flex flex-col justify-between overflow-hidden pointer-events-auto">
               <div className="flex flex-col gap-[16px] p-[16px] overflow-y-auto">
                 {navbarMenus.map((menu, index) =>
                   menu.is_dropdown ? (
@@ -376,7 +476,7 @@ export const Navbar = () => {
       </AnimatePresence>
 
       {/* Overlay */}
-      {/* <AnimatePresence>
+      <AnimatePresence>
         {menuOpen && (
           <motion.div 
             className="fixed inset-0 top-[162px] bg-black z-40"
@@ -387,7 +487,7 @@ export const Navbar = () => {
             onClick={() => setMenuOpen(false)}
           />
         )}
-      </AnimatePresence> */}
+      </AnimatePresence>
     </div>
   );
 };

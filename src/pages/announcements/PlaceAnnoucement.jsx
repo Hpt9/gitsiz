@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import useLanguageStore from "../../store/languageStore";
 import { updatePageTitle } from "../../utils/updatePageTitle";
-import loggedStore from "../../store/loggedStore";
+import useUserStore from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -31,14 +31,22 @@ export const CustomSelect = ({ value, onChange, options, placeholder, className 
   }, []);
 
   return (
-    <div ref={dropdownRef} className={`relative ${className}`}>
+    <div ref={dropdownRef} className={`relative rounded-[16px] border border-[#7D7D7D] ${className}`}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-[48px] rounded-[16px] bg-white text-[#2A534F] border border-[#7D7D7D] px-[16px] flex items-center justify-between outline-none cursor-pointer mobile:text-[14px] lg:text-[16px]"
+        className="w-full h-[48px] rounded-[16px] bg-white text-[#2A534F]  px-[16px] flex items-center justify-between outline-none cursor-pointer mobile:text-[14px] lg:text-[16px]"
       >
         <span className="text-[#2A534F]">
-          {selectedOption ? (selectedOption.name[language] || selectedOption.name.az) : placeholder}
+          {isMulti
+            ? (Array.isArray(value) && value.length > 0
+                ? options
+                    .filter(opt => value.includes(opt.id))
+                    .map(opt => opt.name[language] || opt.name.az)
+                    .join(', ')
+                : placeholder)
+            : (selectedOption ? (selectedOption.name[language] || selectedOption.name.az) : placeholder)
+          }
         </span>
         <ChevronDownIcon
           className={`w-5 h-5 text-[#2A534F] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -108,9 +116,8 @@ CustomSelect.propTypes = {
 };
 
 export const PlaceAnnoucement = () => {
-  const token = localStorage.getItem('token');
-  const { loggedIn } = loggedStore();
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
   const [loading, setLoading] = useState(true);
   const [clusters, setClusters] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -125,13 +132,14 @@ export const PlaceAnnoucement = () => {
     cover_photo: null,
     images: []
   });
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     updatePageTitle("Place Annoucement");
-    if (!loggedIn) {
+    if (!user) {
       navigate("/daxil-ol");
     }
-  }, [loggedIn, navigate]);
+  }, [user, navigate]);
 
   // Fetch clusters and regions data
   useEffect(() => {
@@ -196,6 +204,7 @@ export const PlaceAnnoucement = () => {
       ...prev,
       [id]: value,
     }));
+    setFieldErrors(prev => ({ ...prev, [id]: undefined }));
   };
 
   const handleSelectChange = (field, value) => {
@@ -204,14 +213,15 @@ export const PlaceAnnoucement = () => {
         ...prev,
         cluster_id: Number(value)
       }));
+      setFieldErrors(prev => ({ ...prev, cluster_id: undefined }));
     } else if (field === 'zones') {
-      // Update zones array with selected zone IDs
       const zoneIds = value.map(Number);
       setFormData(prev => ({
         ...prev,
         zones: zoneIds
       }));
       setSelectedZones(value);
+      setFieldErrors(prev => ({ ...prev, zones: undefined }));
     }
   };
 
@@ -222,6 +232,7 @@ export const PlaceAnnoucement = () => {
         ...prev,
         cover_photo: file,
       }));
+      setFieldErrors(prev => ({ ...prev, cover_photo: undefined }));
     }
   };
 
@@ -232,28 +243,22 @@ export const PlaceAnnoucement = () => {
         ...prev,
         images: files,
       }));
+      setFieldErrors(prev => ({ ...prev, images: undefined }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
       const formDataToSend = new FormData();
-      
-      // Append text fields
       formDataToSend.append('name', formData.name);
       formDataToSend.append('service_name', formData.service_name);
       formDataToSend.append('website', formData.website);
       formDataToSend.append('text', formData.text);
       formDataToSend.append('cluster_id', formData.cluster_id);
-      
-      // Append zones as array
       formData.zones.forEach(zoneId => {
         formDataToSend.append('zones[]', zoneId);
       });
-
-      // Append cover_photo and images as files
       if (formData.cover_photo) {
         formDataToSend.append('cover_photo', formData.cover_photo);
       }
@@ -262,14 +267,13 @@ export const PlaceAnnoucement = () => {
           formDataToSend.append('images[]', image);
         });
       }
-
+      const token = useUserStore.getState().token || localStorage.getItem('token');
       const response = await axios.post('https://kobklaster.tw1.ru/api/adverts/create', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         },
       });
-
       if (response.data) {
         toast.success(
           language === "az"
@@ -277,11 +281,17 @@ export const PlaceAnnoucement = () => {
             : language === "en"
             ? "Announcement placed successfully!"
             : "Объявление успешно размещено!",
-          { position: "top-center", autoClose: 3000 }
+          { position: "top-right", autoClose: 3000 }
         );
         setTimeout(() => navigate('/elanlar'), 1000);
       }
     } catch (error) {
+      if (error.response && error.response.status === 422) {
+        setFieldErrors(error.response.data.errors || {});
+      } else {
+        setFieldErrors({});
+        toast.error('Elan yerləşdirilərkən xəta baş verdi!');
+      }
       console.error('Error creating announcement:', error);
     }
   };
@@ -311,44 +321,61 @@ export const PlaceAnnoucement = () => {
           onSubmit={handleSubmit}
           className="mobile:w-full lg:w-[800px] flex flex-col gap-y-[16px] lg:flex-row gap-x-[24px]"
         >
-          <div className="flex w-full lg:w-[50%] flex-col gap-y-[16px]">
+          <div className="flex w-full lg:w-[50%] flex-col gap-y-[8px]">
             <input
               type="text"
               id="name"
               value={formData.name}
               onChange={handleChange}
               placeholder={language === "az" ? "Elan başlığı" : language === "en" ? "Announcement title" : "Заголовок объявления"}
-              className="w-full h-[48px] rounded-[16px] border border-[#7D7D7D] px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D]"
+              className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.name ? 'border-red-500' : 'border-[#7D7D7D]'}`}
             />
+            {fieldErrors.name && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.name[0]}</div>
+            )}
             <input
               type="text"
               id="service_name"
               value={formData.service_name}
               onChange={handleChange}
               placeholder={language === "az" ? "Xidmət" : language === "en" ? "Service" : "Услуга"}
-              className="w-full h-[48px] rounded-[16px] border border-[#7D7D7D] px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D]"
+              className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.service_name ? 'border-red-500' : 'border-[#7D7D7D]'}`}
             />
+            {fieldErrors.service_name && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.service_name[0]}</div>
+            )}
             <input
               type="text"
               id="website"
               value={formData.website}
               onChange={handleChange}
               placeholder={language === "az" ? "Vebsayt" : language === "en" ? "Website" : "Вебсайт"}
-              className="w-full h-[48px] rounded-[16px] border border-[#7D7D7D] px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D]"
+              className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.website ? 'border-red-500' : 'border-[#7D7D7D]'}`}
             />
+            {fieldErrors.website && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.website[0]}</div>
+            )}
             <CustomSelect
               value={formData.cluster_id}
               onChange={(value) => handleSelectChange("cluster_id", value)}
               options={clusters}
               placeholder={language === "az" ? "Klaster" : language === "en" ? "Cluster" : "Кластер"}
+              className={fieldErrors.cluster_id ? 'border border-red-500' : ''}
             />
+            {fieldErrors.cluster_id && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.cluster_id[0]}</div>
+            )}
             <CustomSelect
               value={selectedZones}
               onChange={(value) => handleSelectChange("zones", value)}
               options={regions.flatMap(region => region.zones || [])}
               placeholder={language === "az" ? "Zonalar" : language === "en" ? "Zones" : "Зоны"}
               isMulti={true}
+              className={fieldErrors.zones ? 'border border-red-500' : ''}
             />
+            {fieldErrors.zones && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.zones[0]}</div>
+            )}
           </div>
           <div className="flex flex-col w-full lg:w-[50%] gap-y-[16px]">
             <textarea
@@ -356,8 +383,11 @@ export const PlaceAnnoucement = () => {
               value={formData.text}
               onChange={handleChange}
               placeholder={language === "az" ? "Əlavə məlumat" : language === "en" ? "Additional information" : "Дополнительная информация"}
-              className="w-full h-[60%] rounded-[16px] border border-[#7D7D7D] px-[16px] py-[12px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] resize-none"
+              className={`w-full h-[60%] rounded-[16px] border px-[16px] py-[12px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] resize-none ${fieldErrors.text ? 'border-red-500' : 'border-[#7D7D7D]'}`}
             />
+            {fieldErrors.text && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.text[0]}</div>
+            )}
             {/* Cover Photo Upload */}
             <div className="w-full">
               <label
@@ -393,9 +423,12 @@ export const PlaceAnnoucement = () => {
                 id="cover-photo-upload"
                 accept="image/*"
                 onChange={handleCoverPhotoUpload}
-                className="hidden"
+                className={`hidden ${fieldErrors.cover_photo ? 'border-red-500' : ''}`}
               />
             </div>
+            {fieldErrors.cover_photo && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.cover_photo[0]}</div>
+            )}
             {/* Additional Photos Upload */}
             <div className="w-full">
               <label
@@ -438,9 +471,12 @@ export const PlaceAnnoucement = () => {
                 accept="image/*"
                 multiple
                 onChange={handleAdditionalPhotosUpload}
-                className="hidden"
+                className={`hidden ${fieldErrors.images ? 'border-red-500' : ''}`}
               />
             </div>
+            {fieldErrors.images && (
+              <div className="text-red-500 text-xs mt-1">{fieldErrors.images[0]}</div>
+            )}
           </div>
         </form>
         <button

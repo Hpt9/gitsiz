@@ -11,7 +11,7 @@ import { FaArrowDown } from "react-icons/fa6";
 
 export const Footer = () => {
   const [footerMenus, setFooterMenus] = useState([]);
-  const date = new Date();
+  const [copyright, setCopyright] = useState(null);
   const navigate = useNavigate();
   const { language } = useLanguageStore();
 
@@ -45,6 +45,15 @@ export const Footer = () => {
 
         //console.log("Transformed menus:", transformedMenus); // Debug log
         setFooterMenus(transformedMenus);
+
+        // Get copyright (last item)
+        if (menuData.length > 0) {
+          const lastItem = menuData[menuData.length - 1];
+          setCopyright({
+            text: lastItem.title[language] || Object.values(lastItem.title)[0],
+            url: lastItem.url,
+          });
+        }
       } catch (error) {
         console.error("Error fetching footer menus:", error);
       }
@@ -79,13 +88,10 @@ export const Footer = () => {
             return (
               <div className="flex flex-col " key={index}>
                 <p className="text-[rgba(255,255,255,1)] text-[16px] font-semibold">
-                  {menuKey === "menu1" ? 
+                  {menuKey === "menu1" && 
                     (language === 'az' ? "Haqqında" : 
                      language === 'en' ? "About" : 
-                     "О нас") : 
-                    (language === 'az' ? "Klaster haqqında" : 
-                     language === 'en' ? "About cluster" : 
-                     "О кластере")}
+                     "О нас")}
                 </p>
                 {menu[menuKey].map((item, index) => (
                   <span
@@ -212,10 +218,17 @@ export const Footer = () => {
           <img src={MTTM} alt="" className="" />
           <img src={ik} alt="" className="w-[78px] h-[16px]" />
         </div>
-        <div className="text-white text-[12px] text-center mobile:w-full mobile:mt-[10px] mobile:pt-[10px] mobile:pb-[64px] lg:w-fit lg:mt-[0px] lg:pt-[0px] lg:pb-[0px]">
-          {language === 'az' ? date.getFullYear() + ' © Bütün Hüquqlar Qorunur!' : 
-           language === 'en' ? date.getFullYear() + ' © All rights reserved!' : 
-           date.getFullYear() + ' © Все права защищены!'}
+        <div className="text-white text-[12px] text-center mobile:w-full mobile:mt-[10px] mobile:pt-[10px] mobile:pb-[64px] lg:w-fit lg:mt-[0px] lg:pt-[0px] lg:pb-[0px] relative z-[20]">
+          {copyright && copyright.url ? (
+            <a
+              href={copyright.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#c0c0c0]"
+            >
+              {copyright.text}
+            </a>
+          ) : null}
         </div>
       </div> 
     </div>
