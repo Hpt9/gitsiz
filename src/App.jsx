@@ -20,9 +20,16 @@ import { PasswordChangeConfirm } from "./pages/password/PasswordChangeConfirm";
 import { ForgotPassword } from "./pages/password/ForgotPassword";
 import { ResetPassword } from "./pages/password/ResetPassword";
 import { VerifyEmail } from "./pages/verify/verify";
+import { Maintenance } from "./pages/Maintenance";
 localStorage.removeItem("language-storage");
 
+const MAINTENANCE_MODE = false; // Set to false to disable maintenance mode
+
 function App() {
+  if (MAINTENANCE_MODE) {
+    return <Maintenance />;
+  }
+
   // useEffect(() => {
   //   let lastWidth = window.innerWidth;
   //   const breakpoint = 1024;

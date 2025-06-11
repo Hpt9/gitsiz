@@ -573,10 +573,27 @@ export const Annoucements = () => {
                   <span className="loader"></span>
                 </div>
               ) : !loading && announcements.length === 0 ? (
-                <div className="col-span-full flex justify-center items-center py-16">
-                  <span className="text-lg text-[#2A534F] font-semibold text-center">
+                <div className="col-span-full flex flex-col items-center justify-center py-20">
+                  <svg width="80" height="80" fill="none" viewBox="0 0 24 24" className="mb-6 text-[#2A534F]">
+                    <path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-2xl font-semibold text-[#2A534F] mb-2 text-center">
                     Axtarışa uyğun nəticə tapılmadı
                   </span>
+                  <span className="text-[#7D7D7D] text-center mb-4">
+                    Fərqli açar söz və ya filterlər yoxlayın.
+                  </span>
+                  <button
+                    onClick={handleResetFilters}
+                    className="px-6 py-2 rounded-[16px] border border-[#A0A0A0] text-[#2A534F] bg-white hover:bg-[#2A534F] hover:text-white transition-colors"
+                    type="button"
+                  >
+                    {language === "az"
+                      ? "Filtrləri sıfırla"
+                      : language === "en"
+                      ? "Reset Filters"
+                      : "Сбросить фильтры"}
+                  </button>
                 </div>
               ) : (
                 announcements.map((announcement) => (

@@ -5,7 +5,7 @@ import axios from 'axios';
 import useUserStore from '../../store/userStore';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const SignIn = () => {
@@ -40,10 +40,9 @@ export const SignIn = () => {
       if (token) {
         useUserStore.getState().setToken(token);
         await fetchUserProfile();
-        if (!response.data.user?.phone) {
+        if (!response.data.phone) {
           toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
         }
-        // console.log('User data after login:', response.data.user);
         navigate('/'); // Redirect to home or dashboard
       }
     } catch (error) {
@@ -70,7 +69,6 @@ export const SignIn = () => {
             if (!res.data.user?.phone) {
               toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
             }
-            console.log('User data after Google login:', res.data.user);
             navigate('/');
           });
         }
@@ -90,7 +88,6 @@ export const SignIn = () => {
             if (!err.response.data.user?.phone) {
               toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
             }
-            console.log('User data after Google login (from error):', err.response.data.user);
             navigate('/');
           });
         } else {
@@ -155,6 +152,7 @@ export const SignIn = () => {
                   console.error('Google Login Failed');
                 }}
                 width="100%"
+                className='w-full bg-red-500'
               />
             </div>
           </div>
