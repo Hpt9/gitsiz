@@ -26,7 +26,7 @@ const useUserStore = create((set) => ({
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       set({ user: response.data, token });
     } catch (error) {
       console.error('Failed to fetch user profile:', error);

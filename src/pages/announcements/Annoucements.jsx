@@ -631,22 +631,103 @@ export const Annoucements = () => {
             {/* Pagination */}
             {announcements.length > 0 && !loading && (
               <div className="flex justify-center items-center gap-2 mt-8">
+                {/* Prev Button */}
                 <button
                   onClick={() => handlePageChange(pagination.current_page - 1)}
                   disabled={pagination.current_page === 1}
-                  className="px-4 py-2 border rounded-md disabled:opacity-50"
+                  className="px-5 py-2 rounded-full border border-[#e0e0e0] bg-[#f7f7f7] shadow-[4px_4px_12px_#e0e0e0,-4px_-4px_12px_#ffffff] text-[#2A534F] font-semibold transition disabled:opacity-50"
                 >
-                  Previous
+                  {language === "az"
+                    ? "Öncəki"
+                    : language === "en"
+                    ? "Previous"
+                    : "Предыдущий"}
                 </button>
-                <span className="mx-4">
-                  Page {pagination.current_page} of {pagination.last_page}
-                </span>
+
+                {/* Page Numbers */}
+                {(() => {
+                  const pages = [];
+                  const { current_page, last_page } = pagination;
+                  let start = Math.max(1, current_page - 2);
+                  let end = Math.min(last_page, current_page + 2);
+
+                  if (current_page <= 3) {
+                    end = Math.min(5, last_page);
+                  }
+                  if (current_page >= last_page - 2) {
+                    start = Math.max(1, last_page - 4);
+                  }
+
+                  // Always show first page
+                  if (start > 1) {
+                    pages.push(
+                      <button
+                        key={1}
+                        onClick={() => handlePageChange(1)}
+                        className={`w-10 h-10 rounded-full border border-[#e0e0e0] bg-[#f7f7f7] shadow-[4px_4px_12px_#e0e0e0,-4px_-4px_12px_#ffffff] text-[#2A534F] font-semibold transition`}
+                      >
+                        1
+                      </button>
+                    );
+                    if (start > 2) {
+                      pages.push(
+                        <span key="start-ellipsis" className="px-2 text-xl text-[#b0b0b0]">...</span>
+                      );
+                    }
+                  }
+
+                  // Main page window
+                  for (let i = start; i <= end; i++) {
+                    if (i > 0 && i <= last_page) {
+                      pages.push(
+                        <button
+                          key={i}
+                          onClick={() => handlePageChange(i)}
+                          className={`w-10 h-10 rounded-full border border-[#e0e0e0] font-semibold transition
+                            shadow-[4px_4px_12px_#e0e0e0,-4px_-4px_12px_#ffffff]
+                            ${current_page === i
+                              ? 'bg-[#2A534F] text-white'
+                              : 'bg-[#f7f7f7] text-[#2A534F] hover:bg-[#e0e0e0]'}
+                          `}
+                        >
+                          {i}
+                        </button>
+                      );
+                    }
+                  }
+
+                  // Always show last page
+                  if (end < last_page) {
+                    if (end < last_page - 1) {
+                      pages.push(
+                        <span key="end-ellipsis" className="px-2 text-xl text-[#b0b0b0]">...</span>
+                      );
+                    }
+                    pages.push(
+                      <button
+                        key={last_page}
+                        onClick={() => handlePageChange(last_page)}
+                        className={`w-10 h-10 rounded-full border border-[#e0e0e0] bg-[#f7f7f7] shadow-[4px_4px_12px_#e0e0e0,-4px_-4px_12px_#ffffff] text-[#2A534F] font-semibold transition`}
+                      >
+                        {last_page}
+                      </button>
+                    );
+                  }
+
+                  return pages;
+                })()}
+
+                {/* Next Button */}
                 <button
                   onClick={() => handlePageChange(pagination.current_page + 1)}
                   disabled={pagination.current_page === pagination.last_page}
-                  className="px-4 py-2 border rounded-md disabled:opacity-50"
+                  className="px-5 py-2 rounded-full border border-[#e0e0e0] bg-[#f7f7f7] shadow-[4px_4px_12px_#e0e0e0,-4px_-4px_12px_#ffffff] text-[#2A534F] font-semibold transition disabled:opacity-50"
                 >
-                  Next
+                  {language === "az"
+                    ? "Sonrakı"
+                    : language === "en"
+                    ? "Next"
+                    : "Следующий"}
                 </button>
               </div>
             )}
