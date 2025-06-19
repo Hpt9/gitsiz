@@ -23,7 +23,7 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center py-[32px] lg:h-[calc(100vh-492px)]">
+    <div className="w-full flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
       <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
         <h1 className="text-left text-[24px] font-bold text-[#2A534F]">
           Şifrəni bərpa et

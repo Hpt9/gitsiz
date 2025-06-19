@@ -10,12 +10,14 @@ import { HiOutlineLogout } from "react-icons/hi";
 import useLanguageStore from "../../store/languageStore";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-
+import { MdOutlineModeEdit } from "react-icons/md";
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+  const token = useUserStore((state) => state.token);
+  const logout = useUserStore((state) => state.logout);
   const navigate = useNavigate();
   const [userAnnouncements, setUserAnnouncements] = useState([]);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(false);
@@ -35,7 +37,6 @@ export const Profile = () => {
 
   // Redirect to login if not logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) {
       navigate("/daxil-ol");
       return;
@@ -43,7 +44,7 @@ export const Profile = () => {
     
     // Only fetch user profile if we have a token
     fetchUserProfile();
-  }, [navigate, fetchUserProfile]);
+  }, [navigate, fetchUserProfile, token]);
 
   // Local state for editing, initialized from user data
   const [profileData, setProfileData] = useState({
@@ -68,7 +69,6 @@ export const Profile = () => {
     const fetchUserAnnouncements = async () => {
       setLoadingAnnouncements(true);
       try {
-        const token = localStorage.getItem("token");
         const response = await axios.get(
           "https://kobklaster.tw1.ru/api/user-adverts",
           {
@@ -77,7 +77,7 @@ export const Profile = () => {
             },
           }
         );
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setUserAnnouncements(response.data.data || []);
       } catch (error) {
         setUserAnnouncements([]);
@@ -86,10 +86,10 @@ export const Profile = () => {
         setIsLoading(false);
       }
     };
-    if (localStorage.getItem("token")) {
+    if (token) {
       fetchUserAnnouncements();
     }
-  }, []);
+  }, [token]);
 
   // Fetch clusters and zones for dropdowns
   useEffect(() => {
@@ -130,7 +130,6 @@ export const Profile = () => {
 
   const handleEdit = async () => {
     if (isEditing) {
-      const token = localStorage.getItem("token");
       try {
         const response = await axios.put(
           `${base_url}/user/edit`,
@@ -164,13 +163,13 @@ export const Profile = () => {
 
   // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    logout();
     navigate("/daxil-ol");
   };
 
   // Open modal and set form data
   const handleEditClick = (announcement) => {
-    console.log('Editing announcement:', announcement); // Debug: log the advert data
+    // console.log('Editing announcement:', announcement); // Debug: log the advert data
     setSelectedAnnouncement(announcement);
     
     // Format zones data properly
@@ -212,7 +211,6 @@ export const Profile = () => {
   // Handle submit
   const handleEditFormSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
     const formData = new FormData();
   
     formData.append("advert_name", editForm.name || "");
@@ -333,7 +331,6 @@ export const Profile = () => {
   const handleChangePasswordSubmit = async (e) => {
     e.preventDefault();
     setPasswordLoading(true);
-    const token = localStorage.getItem("token");
     try {
       await axios.post(
         "https://kobklaster.tw1.ru/api/user/password/request-change",
@@ -344,7 +341,7 @@ export const Profile = () => {
           },
         }
       );
-      toast.success("Şifrə uğurla dəyişdirildi!");
+      toast.warning("Şifrə dəyişdirilməsi üçün e-poçt ünvanınıza göndərilən linki təsdiq edin.");
       setShowChangePassword(false);
       setPasswordForm({ password: "", password_confirmation: "" });
     } catch (error) {
@@ -356,7 +353,7 @@ export const Profile = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
+      <div className="flex justify-center items-center mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
         <span className="loader"></span>
       </div>
     ); // Optional: Add a loading state
@@ -377,7 +374,7 @@ export const Profile = () => {
         <div className="w-full flex flex-row max-w-[1920px] mx-auto">
           <div className=" rounded-b-[8px] w-full max-w-[1920px]">
             <div className="flex flex-col items-start gap-y-[24px]">
-              <div className="flex justify-between items-center w-full">
+              <div className="flex  items-center w-full gap-x-[16px]">
                 <h2 className="text-[20px] font-semibold text-[#2A534F]">
                   {isEditing ? "Redaktə et" : "Şəxsi məlumatlarım"}
                 </h2>
@@ -407,7 +404,7 @@ export const Profile = () => {
                 </div>
               </div>
 
-              <div className="w-full space-y-[16px]">
+              <div className="w-full max-w-[500px] space-y-[16px]">
                 <div className="space-y-[8px]">
                   <label className="text-[14px] text-gray-600">Ad, soyad</label>
                   {isEditing ? (
@@ -475,7 +472,7 @@ export const Profile = () => {
               </button> */}
 
               {isEditing && (
-                <div className="flex gap-x-[16px] w-full">
+                <div className="flex gap-x-[16px] w-full max-w-[500px]">
                   <button
                     onClick={() => setIsEditing(false)}
                     className="flex-1 p-[12px] border border-[#2A534F] text-[#2A534F] rounded-[4px] hover:bg-gray-50"

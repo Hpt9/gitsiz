@@ -1,27 +1,34 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-
+import useUserStore from "../../store/userStore";
 export const PasswordChangeConfirm = () => {
   const [status, setStatus] = useState("loading"); // loading, success, error
   const [countdown, setCountdown] = useState(3);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Helper to extract token from query string
-  function getTokenFromQuery() {
-    const params = new URLSearchParams(location.search);
-    return params.get("token");
-  }
-
+  const token = useUserStore((state) => state.token);
   useEffect(() => {
-    const token = getTokenFromQuery();
-    if (!token) {
+    // Get the query string from the current URL
+    const queryString = location.search.startsWith('?') ? location.search.slice(1) : location.search;
+    const params = new URLSearchParams(queryString);
+    const token2 = params.get("token");
+    const expires = params.get("expires");
+    const signature = params.get("signature");
+    // console.log("token", token, "expires", expires, "signature", signature);
+    if (!token2 || !expires || !signature) {
       setStatus("error");
       return;
     }
+    const apiUrl = `https://kobklaster.tw1.ru/api/user/password/confirm-change/${token2}?expires=${expires}&signature=${signature}`;
+    // {{url}}/api/user/password/confirm-change/9099f110-756b-4fb2-8d6c-1000c8e17dd8?expires=1750330552&signature=34db2027661d03d1fbd373faa0931dbc491912a179ec91907d56404cfc9f142f
     axios
-      .get(`https://kobklaster.tw1.ru/api/user/password/confirm-change/${token}`)
+      .get(apiUrl, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
       .then(() => {
         setStatus("success");
       })
@@ -42,7 +49,7 @@ export const PasswordChangeConfirm = () => {
   }, [status, countdown, navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-[calc(100vh-493px)] bg-gray-50">
+    <div className="flex flex-col items-center justify-center  mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] bg-gray-50">
       <div className="bg-white shadow-lg rounded-xl p-8 flex flex-col items-center transition-all duration-500 min-w-[320px]">
         {status === "loading" && (
           <>

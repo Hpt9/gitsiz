@@ -190,7 +190,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     // Check token on mount
-    const token = localStorage.getItem("token");
+    const token = useUserStore.getState().token;
     if (token) {
       // Fetch user profile if token exists
       useUserStore.getState().fetchUserProfile();
@@ -200,7 +200,7 @@ export const Navbar = () => {
 
     // Listen for token changes in other tabs
     const handleStorage = (event) => {
-      if (event.key === "token") {
+      if (event.key === 'rndtest') {
         if (event.newValue) {
           useUserStore.getState().fetchUserProfile();
         } else {
@@ -213,7 +213,7 @@ export const Navbar = () => {
   }, [setUser]);
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
+    const token = useUserStore.getState().token;
     if (!token) return;
     try {
       await axios.post(
@@ -228,8 +228,7 @@ export const Navbar = () => {
     } catch {
       // Optionally handle error
     }
-    localStorage.removeItem("token");
-    setUser(null);
+    useUserStore.getState().logout();
     setMenuOpen(false);
     navigate("/");
   };
@@ -256,7 +255,7 @@ export const Navbar = () => {
             <img
               src={LOGO}
               alt="kob_logo"
-              className="mobile:w-[24px] xl:w-[45px]"
+              className="mobile:w-[24px] xl:w-[45px] hover:cursor-pointer"
               onClick={() => navigate("/")}
             />
             <div className="hidden xl:flex lg:gap-5 xl:gap-6 2xl:gap-8">
@@ -278,12 +277,12 @@ export const Navbar = () => {
                   </div>
                 )
               )}
-              <div
+              {/* <div
                 className="text-white text-[14px] cursor-pointer flex items-center"
                 onClick={() => navigate("/elanlar")}
               >
                 Elanlar
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="items-center gap-x-[16px] hidden xl:flex">
@@ -391,12 +390,12 @@ export const Navbar = () => {
                     </div>
                   )
                 )}
-                <div
+                {/* <div
                   className="text-white text-[14px] cursor-pointer flex items-center"
                   onClick={() => navigate("/elanlar")}
                 >
                   Elanlar
-                </div>
+                </div> */}
               </div>
 
               {/* Language and Auth Buttons */}

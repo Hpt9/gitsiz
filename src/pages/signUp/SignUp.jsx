@@ -48,7 +48,7 @@ export const SignUp = () => {
       const response = await axios.post('https://kobklaster.tw1.ru/api/register', formData);
       const token = response.data.token;
       if (token) {
-        localStorage.setItem('token', token);
+        useUserStore.getState().setToken(token);
         await fetchUserProfile();
         navigate('/'); // Redirect to home or dashboard
       }
@@ -74,7 +74,7 @@ export const SignUp = () => {
       })
       .then((res) => {
         if (res.data.token) {
-          localStorage.setItem('token', res.data.token);
+          useUserStore.getState().setToken(res.data.token);
           fetchUserProfile().then(() => navigate('/'));
         }
       })
@@ -88,7 +88,7 @@ export const SignUp = () => {
           if (err.response.data.need_phone) {
             toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
           }
-          localStorage.setItem('token', err.response.data.token);
+          useUserStore.getState().setToken(err.response.data.token);
           fetchUserProfile().then(() => navigate('/'));
         } else {
           toast.error('Xəta baş verdi');
@@ -100,7 +100,7 @@ export const SignUp = () => {
   const passwordBorder = !passwordsMatch && formData.password_confirmation ? 'border-red-500' : 'border-[#7D7D7D]';
 
   return (
-    <div className="w-full  flex justify-center items-center py-[32px] lg:h-[calc(100vh-448px)]">
+    <div className="w-full  flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
       <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
         <h1 className="text-left text-[20px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin

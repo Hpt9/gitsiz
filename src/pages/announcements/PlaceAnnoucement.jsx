@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import useLanguageStore from "../../store/languageStore";
 import { updatePageTitle } from "../../utils/updatePageTitle";
-import useUserStore from "../../store/userStore";
+import useUserStore, { fetchUserProfile } from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -136,10 +136,14 @@ export const PlaceAnnoucement = () => {
 
   useEffect(() => {
     updatePageTitle("Place Annoucement");
-    if (!user) {
-      navigate("/daxil-ol");
-    }
-  }, [user, navigate]);
+    const checkUser = async () => {
+      await fetchUserProfile();
+      if (!user) {
+        navigate("/daxil-ol");
+      }
+    };
+    checkUser();
+  }, [user, navigate, fetchUserProfile]);
 
   // Fetch clusters and regions data
   useEffect(() => {
@@ -249,6 +253,31 @@ export const PlaceAnnoucement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Client-side validation
+    if (!formData.name.trim()) {
+        toast.error("Başlıq boş ola bilməz");
+        return;
+    }
+    if (!formData.text.trim()) {
+        toast.error("Mətn boş ola bilməz");
+        return;
+    }
+    if (formData.cluster_id <= 0) {
+        toast.error("Klaster seçilməyib");
+        return;
+    }
+    if (formData.zones.length === 0) {
+        toast.error("Zonalar seçilməyib");
+        return;
+    }
+    if (formData.cover_photo === null) {
+        toast.error("Örtük şəkli yüklənməyib");
+        return;
+    }
+    if (formData.images.length === 0) {
+        toast.error("Əlavə şəkillər yüklənməyib");
+        return;
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -267,7 +296,7 @@ export const PlaceAnnoucement = () => {
           formDataToSend.append('images[]', image);
         });
       }
-      const token = useUserStore.getState().token || localStorage.getItem('token');
+      const token = useUserStore.getState().token;
       const response = await axios.post('https://kobklaster.tw1.ru/api/adverts/create', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',

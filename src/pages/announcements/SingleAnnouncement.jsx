@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import DOMPurify from 'dompurify';
+import PropTypes from 'prop-types';
 
 // Minimalist custom arrows for react-slick
 const ArrowLeft = (props) => (
@@ -201,7 +203,7 @@ export const SingleAnnouncement = () => {
                         <div className="text-gray-900">{announcement.service_name}</div>
                         <div className="text-gray-700">Website:</div>
                         <div className="text-gray-900 w-full">
-                            <a href={announcement.website} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+                            <a href='#' className="text-blue-600 " target="_blank" rel="noopener noreferrer">
                                 {announcement.website}
                             </a>
                         </div>
@@ -211,7 +213,7 @@ export const SingleAnnouncement = () => {
                     <div className="mt-4 text-gray-700">
                         <span className="font-bold">Açıqlama: </span>
                         {announcement.text && (
-                            <span dangerouslySetInnerHTML={{ __html: announcement.text }} />
+                            <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(announcement.text) }} />
                         )}
                     </div>
                 </div>

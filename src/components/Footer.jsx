@@ -53,7 +53,7 @@ export const Footer = () => {
             text: lastItem.title[language] || Object.values(lastItem.title)[0],
             url: lastItem.url,
           });
-          console.log(lastItem)
+          // console.log(lastItem)
         }
       } catch (error) {
         console.error("Error fetching footer menus:", error);

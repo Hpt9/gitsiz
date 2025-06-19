@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const SignIn = () => {
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -34,8 +35,10 @@ export const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(false);
+    setLoading(true); // Start loading
     try {
       const response = await axios.post('https://kobklaster.tw1.ru/api/login', formData);
+      // console.log(response);
       const token = response.data.token;
       if (token) {
         useUserStore.getState().setToken(token);
@@ -45,8 +48,10 @@ export const SignIn = () => {
         }
         navigate('/'); // Redirect to home or dashboard
       }
+      setLoading(false); // Stop loading on success
     } catch (error) {
       setError(true);
+      setLoading(false); // Stop loading on error
       toast.error(error.response.data.message);
       console.error('Login error:', error);
     }
@@ -97,7 +102,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="w-full  flex justify-center items-center py-[32px] min-h-[calc(100vh-492px)]">
+    <div className="w-full  flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
       <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
         <h1 className="text-left text-[24px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin
@@ -141,9 +146,17 @@ export const SignIn = () => {
           <div className="flex gap-x-[8px]">
             <button
               type="submit"
-              className="flex-1 h-[48px] bg-[#967D2E] font-bold text-white rounded-[16px] hover:bg-[#876f29] transition-colors"
+              className="flex-1 h-[48px] bg-[#967D2E] font-bold text-white rounded-[16px] hover:bg-[#876f29] transition-colors flex items-center justify-center"
+              disabled={loading}
             >
-              Daxil ol
+              {loading ? (
+                <span className='flex items-center justify-center'>
+                  <span className="loader2 w-[20px] h-[20px]"></span>
+                  <span className='ml-[8px]'>Giriş edilir...</span>
+                </span>
+              ) : (
+                "Daxil ol"
+              )}
             </button>
             <div className="flex-1 flex items-center justify-center">
               <GoogleLogin

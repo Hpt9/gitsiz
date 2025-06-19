@@ -3,7 +3,7 @@ import { TbArrowBackUp } from "react-icons/tb";
 
 export const NotFound = () => {
   return (
-    <div className="min-h-[calc(100vh-451px)] flex flex-col items-center justify-center bg-gray-100">
+    <div className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex flex-col items-center justify-center bg-gray-100">
       <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
       <h2 className="text-2xl font-semibold text-gray-600 mb-4">Səhifə Tapılmadı</h2>
       <p className="text-gray-500 mb-8">Səhifə axtarışda tapılmadı və ya ünvanı dəyişdirilib.</p>

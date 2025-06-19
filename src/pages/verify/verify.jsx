@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { ImSpinner8 } from "react-icons/im";
 import useLanguageStore from "../../store/languageStore";
+import useUserStore from "../../store/userStore";
 
 export const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -12,6 +13,7 @@ export const VerifyEmail = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState("verifying"); // verifying, success, error
   const { language } = useLanguageStore();
+  const token = useUserStore(state => state.token);
 
   const getText = {
     verifying: {
@@ -55,7 +57,6 @@ export const VerifyEmail = () => {
       }
 
       try {
-        const token = localStorage.getItem("token");
         if (!token) {
           navigate('/daxil-ol');
           return;
@@ -82,7 +83,7 @@ export const VerifyEmail = () => {
     };
 
     verify();
-  }, [redirectUrl, navigate, language]);
+  }, [redirectUrl, navigate, language, token]);
 
   const renderStatus = () => {
     switch (status) {
@@ -130,7 +131,7 @@ export const VerifyEmail = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-493px)] flex items-center justify-center bg-gray-50">
+    <div className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex items-center justify-center bg-gray-50">
       <div className="p-8 bg-white rounded-lg shadow-lg">
         {renderStatus()}
       </div>
