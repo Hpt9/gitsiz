@@ -6,6 +6,8 @@ import DOMPurify from "dompurify";
 import useLanguageStore from "../../store/languageStore";
 import { img_url } from "../../components/expoted_images";
 import { updatePageTitle } from '../../utils/updatePageTitle';
+import { useNavigate } from "react-router-dom";
+
 export const Legislation = () => {
   useEffect(() => {
     updatePageTitle('Qanunvericilik');
@@ -13,6 +15,8 @@ export const Legislation = () => {
   const { language } = useLanguageStore();
   const [legislationData, setLegislationData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchLegislationData = async () => {
       try {
@@ -29,6 +33,15 @@ export const Legislation = () => {
 
     fetchLegislationData();
   }, []);
+
+  const handleButtonClick = (url) => {
+    if (url.startsWith("http")) {
+      window.open(url, "_blank");
+    } else {
+      navigate(url);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
@@ -54,6 +67,19 @@ export const Legislation = () => {
             __html: DOMPurify.sanitize(legislationData.description[language]),
           }}
         ></p>
+        <div className="flex gap-x-[8px] relative z-10 mt-4">
+            {legislationData.buttons.map((button, index) => (
+              <button
+                key={index}
+                onClick={() =>
+                  handleButtonClick(button.url[language] || button.url.az)
+                }
+                className="rounded-[12px] bg-[rgb(150,125,46)] border-2 border-[rgb(150,125,46)] mobile:w-[50%] md:w-fit text-white text-[14px] font-medium mobile:px-[2px] md:px-[28px] py-[8px] transition-all duration-300 hover:bg-white hover:text-[rgb(150,125,46)]"
+              >
+                {button.text[language] || button.text.az}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <div className="legislation_body flex flex-col">

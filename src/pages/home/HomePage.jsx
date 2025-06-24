@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import useLanguageStore from "../../store/languageStore";
 import { img_url } from "../../components/expoted_images";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { updatePageTitle } from "../../utils/updatePageTitle";
+import { Modal } from "../../components/ui/Modal";
+
 export const HomePage = () => {
   useEffect(() => {
     updatePageTitle("Ana səhifə");
@@ -15,6 +17,17 @@ export const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.fromRegistration) {
+      setIsModalOpen(true);
+      // Clean the state to prevent modal from reopening on back navigation
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
   
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -42,7 +55,7 @@ export const HomePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
+      <div className="flex justify-center items-center h-[calc(100vh-600px)]">
         <span className="loader"></span>
       </div>
     ); // Optional: Add a loading state
@@ -50,6 +63,32 @@ export const HomePage = () => {
 
   return (
     <div className="">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Qeydiyyatınız uğurla tamamlandı!"
+      >
+        <p className="mb-4">
+          Qeydiyyatınız uğurla tamamlandı. Qanunvericilik bölməsinə keçid edin.
+        </p>
+        <div className="flex justify-end gap-x-4">
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors"
+          >
+            Xeyr
+          </button>
+          <button
+            onClick={() => {
+              setIsModalOpen(false);
+              navigate("/qanunvericilik");
+            }}
+            className="px-4 py-2 rounded-lg bg-[#2A534F] text-white hover:bg-[#1a3331] transition-colors"
+          >
+            Bəli
+          </button>
+        </div>
+      </Modal>
       <div className="home_header relative mobile:h-fit mobile:pt-[0px] mobile:pb-[32px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)]">
         {/* <img
           src={BG_IMAGE}

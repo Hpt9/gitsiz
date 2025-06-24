@@ -14,40 +14,56 @@ import { Annoucements } from "./pages/announcements/Annoucements";
 import { PlaceAnnoucement } from "./pages/announcements/PlaceAnnoucement";
 import { SingleAnnouncement } from "./pages/announcements/SingleAnnouncement";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { PasswordChangeConfirm } from "./pages/password/PasswordChangeConfirm";
 import { ForgotPassword } from "./pages/password/ForgotPassword";
 import { ResetPassword } from "./pages/password/ResetPassword";
 import { VerifyEmail } from "./pages/verify/verify";
 import { Maintenance } from "./pages/Maintenance";
-localStorage.removeItem("language-storage");
-
-const MAINTENANCE_MODE = false; // Set to false to disable maintenance mode
+import { useEffect, useState } from "react";
 
 function App() {
-  if (MAINTENANCE_MODE) {
+  const [maintenance, setMaintenance] = useState(false);
+  // const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://kobklaster.tw1.ru/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        // Data is now a nested array, so flatten it
+        const settingsArr = Array.isArray(data) ? data.flat() : [];
+        const maintenanceSetting = settingsArr.find(
+          (item) => item.key === "maintenance"
+        );
+        if (
+          maintenanceSetting &&
+          maintenanceSetting.value &&
+          maintenanceSetting.value.az === "true"
+        ) {
+          setMaintenance(true);
+        } else {
+          setMaintenance(false);
+        }
+        // setLoading(false);
+      })
+      .catch(() => {
+        setMaintenance(false);
+        // setLoading(false);
+      });
+  }, []);
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="loader3"></div>
+  //     </div>
+  //   );
+  // }
+
+  if (maintenance) {
     return <Maintenance />;
   }
-
-  // useEffect(() => {
-  //   let lastWidth = window.innerWidth;
-  //   const breakpoint = 1024;
-
-  //   const handleResize = () => {
-  //     const currentWidth = window.innerWidth;
-  //     if (
-  //       (lastWidth < breakpoint && currentWidth >= breakpoint) ||
-  //       (lastWidth >= breakpoint && currentWidth < breakpoint)
-  //     ) {
-  //       window.location.reload();
-  //     }
-  //     lastWidth = currentWidth;
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
 
   return (
     <>
@@ -72,7 +88,10 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/password-change-confirm" element={<PasswordChangeConfirm />} />
+                <Route
+                  path="/password-change-confirm"
+                  element={<PasswordChangeConfirm />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

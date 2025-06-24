@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
+import { motion, AnimatePresence } from "framer-motion";
 
 // Minimalist custom arrows for react-slick
 const ArrowLeft = (props) => (
@@ -43,6 +44,16 @@ export const SingleAnnouncement = () => {
     const [loading, setLoading] = useState(true);
     const [announcement, setAnnouncement] = useState(null);
     const [similarAnnouncements, setSimilarAnnouncements] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+      name: '',
+      company: '',
+      voen: '',
+      address: '',
+      period: '',
+      direction: '',
+      details: ''
+    });
 
     const getImagesArray = (images) => {
         if (!images) return [];
@@ -78,7 +89,7 @@ export const SingleAnnouncement = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-[50vh]">
+            <div className="flex justify-center items-center min-h-[calc(100vh-492px)]">
                 <span className="loader"></span>
             </div>
         );
@@ -170,14 +181,14 @@ export const SingleAnnouncement = () => {
             <div className="w-full max-w-[1200px] flex flex-col lg:flex-row gap-8">
                 {/* Image Slider */}
                 <div className="w-full lg:w-1/2 flex flex-col items-center">
-                    <div className="w-full h-fit aspect-[4/3] rounded-xl overflow-hidden bg-gray-200 relative asdfg">
+                    <div className="w-full h-[450px] aspect-[4/3] rounded-xl overflow-hidden bg-gray-200 relative asdfg">
                         <Slider {...sliderSettings} className="h-[450px]">
                             {sliderImages.map((img, idx) => (
                                 <div key={idx} className="w-full h-full flex items-center justify-center">
                                     <img
                                         src={getImageUrl(img)}
                                         alt={announcement.name}
-                                        className="w-full h-full object-contain"
+                                        className="w-full h-[450px] object-cover"
                                     />
                                 </div>
                             ))}
@@ -218,6 +229,43 @@ export const SingleAnnouncement = () => {
                     </div>
                 </div>
             </div>
+            <button 
+              className="bg-[#2A534F] text-white px-4 py-2 rounded-md hover:bg-[#1a3330] transition-colors mt-[16px]"
+              onClick={() => setIsModalOpen(true)}
+            >Müraciət et</button>
+
+            {/* Modal */}
+            <AnimatePresence>
+            {isModalOpen && (
+              <div className="fixed inset-0 z-[999999999999999999999999] flex items-center justify-center bg-black bg-opacity-60">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="bg-white rounded-2xl p-6 w-full max-w-[500px] relative"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-[#2A534F]">Müraciət formu</h2>
+                    <button onClick={() => setIsModalOpen(false)} className="text-2xl font-bold text-[#2A534F] hover:text-[#1a3330]">&times;</button>
+                  </div>
+                  <form className="flex flex-col gap-4">
+                    <input className="border rounded-lg px-4 py-3" placeholder="Ad Soyad" value={formData.name} onChange={e => setFormData(f => ({...f, name: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="Şirkət adı" value={formData.company} onChange={e => setFormData(f => ({...f, company: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="VÖEN" value={formData.voen} onChange={e => setFormData(f => ({...f, voen: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="Şirkət ünvanı" value={formData.address} onChange={e => setFormData(f => ({...f, address: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="Fəaliyyət dövrü" value={formData.period} onChange={e => setFormData(f => ({...f, period: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="Fəaliyyət istiqaməti" value={formData.direction} onChange={e => setFormData(f => ({...f, direction: e.target.value}))} />
+                    <input className="border rounded-lg px-4 py-3" placeholder="Şirkətin detalları" value={formData.details} onChange={e => setFormData(f => ({...f, details: e.target.value}))} />
+                    <div className="flex gap-4 mt-2">
+                      <button type="button" className="flex-1 border border-[#967D2E] text-[#967D2E] rounded-lg py-3 font-semibold hover:bg-[#f7f5ef]" onClick={() => setIsModalOpen(false)}>Ləğv et</button>
+                      <button type="submit" className="flex-1 bg-[#967D2E] text-white rounded-lg py-3 font-semibold hover:bg-[#876f29]">Göndər</button>
+                    </div>
+                  </form>
+                </motion.div>
+              </div>
+            )}
+            </AnimatePresence>
 
             {/* Similar Announcements */}
             <div className="mt-12">

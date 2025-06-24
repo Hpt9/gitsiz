@@ -207,6 +207,16 @@
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
     }
+  .loader3 {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
 
     @keyframes rotation {
     0% {
@@ -216,3 +226,8 @@
         transform: rotate(360deg);
     }
     } 
+
+    .slick-track{
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }

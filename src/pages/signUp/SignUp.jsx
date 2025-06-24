@@ -5,6 +5,7 @@ import useUserStore from '../../store/userStore';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
+import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ export const SignUp = () => {
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = useUserStore(state => state.user);
   const navigate = useNavigate();
   const fetchUserProfile = useUserStore(state => state.fetchUserProfile);
@@ -26,12 +29,93 @@ export const SignUp = () => {
     }
   }, [user, navigate]);
 
+  // Function to format phone number
+  const formatPhoneNumber = (value) => {
+    // Remove all non-digit characters
+    const number = value.replace(/\D/g, "");
+
+    // Return empty if no input
+    if (number.length === 0) return "";
+
+    // Start building the formatted number
+    let formatted = "+";
+
+    // Add the country code
+    if (number.length >= 3) {
+      formatted += number.slice(0, 3);
+      if (number.length > 3) formatted += "-";
+    } else {
+      return formatted + number;
+    }
+
+    // Add the operator code
+    if (number.length >= 5) {
+      formatted += number.slice(3, 5);
+      if (number.length > 5) formatted += "-";
+    } else {
+      return formatted + number.slice(3);
+    }
+
+    // Add the first part of subscriber number
+    if (number.length >= 8) {
+      formatted += number.slice(5, 8);
+      if (number.length > 8) formatted += "-";
+    } else {
+      return formatted + number.slice(5);
+    }
+
+    // Add the second part
+    if (number.length >= 10) {
+      formatted += number.slice(8, 10);
+      if (number.length > 10) formatted += "-";
+    } else {
+      return formatted + number.slice(8);
+    }
+
+    // Add the last part
+    if (number.length >= 12) {
+      formatted += number.slice(10, 12);
+    } else {
+      return formatted + number.slice(10);
+    }
+
+    return formatted;
+  };
+
+  const handlePhoneChange = (e) => {
+    const input = e.target;
+    let { value } = e.target;
+    const prevValue = formData.phone;
+
+    // If user is deleting and the field is about to be empty
+    if (prevValue.length > value.length && value.length === 4) { // Handles deleting back to "+994"
+        setFormData(prev => ({ ...prev, phone: "" }));
+        return;
+    }
+
+    const formattedPhone = formatPhoneNumber(value);
+
+    setFormData(prev => ({ ...prev, phone: formattedPhone }));
+      
+    // Set cursor position to the end after the update
+    setTimeout(() => {
+        input.setSelectionRange(formattedPhone.length, formattedPhone.length);
+    }, 0);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Special handling for phone field
+    if (name === 'phone') {
+        handlePhoneChange(e);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    
     setFieldErrors(prev => ({ ...prev, [name]: undefined }));
 
     // Live check for password match
@@ -44,13 +128,20 @@ export const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const submissionData = {
+      ...formData,
+      phone: formData.phone.replace(/\D/g, ''),
+    };
+
     try {
-      const response = await axios.post('https://kobklaster.tw1.ru/api/register', formData);
+      const response = await axios.post('https://kobklaster.tw1.ru/api/register', submissionData);
       const token = response.data.token;
       if (token) {
         useUserStore.getState().setToken(token);
         await fetchUserProfile();
-        navigate('/'); // Redirect to home or dashboard
+        navigate('/', { state: { fromRegistration: true } }); // Redirect and signal for modal
       }
     } catch (error) {
       if (error.response && error.response.status === 422) {
@@ -59,6 +150,8 @@ export const SignUp = () => {
         setFieldErrors({});
         toast.error('Qeydiyyat zamanı xəta baş verdi!');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +168,7 @@ export const SignUp = () => {
       .then((res) => {
         if (res.data.token) {
           useUserStore.getState().setToken(res.data.token);
-          fetchUserProfile().then(() => navigate('/'));
+          fetchUserProfile().then(() => navigate('/', { state: { fromRegistration: true } }));
         }
       })
       .catch((err) => {
@@ -89,7 +182,7 @@ export const SignUp = () => {
             toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
           }
           useUserStore.getState().setToken(err.response.data.token);
-          fetchUserProfile().then(() => navigate('/'));
+          fetchUserProfile().then(() => navigate('/', { state: { fromRegistration: true } }));
         } else {
           toast.error('Xəta baş verdi');
         }
@@ -105,7 +198,7 @@ export const SignUp = () => {
         <h1 className="text-left text-[20px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin
         </h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-y-[16px]">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-y-[8px]">
           <input
             type="text"
             name="name"
@@ -120,9 +213,9 @@ export const SignUp = () => {
           <input
             type="text"
             name="phone"
+            placeholder="+994-99-999-99-99"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="Telefon nömrəsi"
             className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.phone ? 'border-red-500' : 'border-[#7D7D7D]'}`}
           />
           {fieldErrors.phone && (
@@ -139,34 +232,60 @@ export const SignUp = () => {
           {fieldErrors.email && (
             <div className="text-red-500 text-xs mt-1">{fieldErrors.email[0]}</div>
           )}
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Parolunuz"
-            className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.password ? 'border-red-500' : passwordBorder}`}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Parolunuz"
+              className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.password ? 'border-red-500' : passwordBorder}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform text-gray-500"
+            >
+              {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </button>
+          </div>
           {fieldErrors.password && (
             <div className="text-red-500 text-xs mt-1">{fieldErrors.password[0]}</div>
           )}
-          <input
-            type="password"
-            name="password_confirmation"
-            value={formData.password_confirmation}
-            onChange={handleChange}
-            placeholder="Parolunuzu yenidən daxil edin"
-            className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${!passwordsMatch && formData.password_confirmation ? 'border-red-500' : passwordBorder}`}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password_confirmation"
+              value={formData.password_confirmation}
+              onChange={handleChange}
+              placeholder="Parolunuzu yenidən daxil edin"
+              className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${!passwordsMatch && formData.password_confirmation ? 'border-red-500' : passwordBorder}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform text-gray-500"
+            >
+              {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </button>
+          </div>
           {!passwordsMatch && formData.password_confirmation && (
             <div className="text-red-500 text-xs mt-1">Şifrələr eyni olmalıdır.</div>
           )}
           <div className="flex gap-x-[8px] mt-[16px]">
             <button
               type="submit"
-              className="flex-1 h-[48px] bg-[#967D2E] font-bold text-white rounded-[16px] hover:bg-[#876f29] transition-colors"
+              className="flex-1 h-[48px] bg-[#967D2E] font-bold text-white rounded-[16px] hover:bg-[#876f29] transition-colors flex items-center justify-center"
+              disabled={loading}
             >
-              Davam et
+              {loading ? (
+                <span className='flex items-center justify-center'>
+                  <span className="loader2 w-[20px] h-[20px]"></span>
+                  <span className='ml-[8px]'>Qeydiyyat...</span>
+                </span>
+              ) : (
+                "Davam et"
+              )}
             </button>
             <div className="flex-1 flex items-center justify-center">
               <GoogleLogin

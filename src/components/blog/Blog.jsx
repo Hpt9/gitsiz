@@ -6,6 +6,10 @@ import { MdOutlineDownloadForOffline } from "react-icons/md";
 import useLanguageStore from '../../store/languageStore';
 import { updatePageTitle } from '../../utils/updatePageTitle';
 import { LiaDownloadSolid } from "react-icons/lia";
+import KOBLOGO from "../../assets/icons/kob.svg"
+import koLOGO from "../../assets/icons/iko.png"
+import mttmLOGO from "../../assets/icons/mttm.svg"
+import PHLOGO from "../../assets/icons/PH_aze.jpg"
 export const Blog = () => {
   const { language } = useLanguageStore();
   const { slug } = useParams();
@@ -85,11 +89,7 @@ export const Blog = () => {
           {blogData?.title[language]}
         </h1>
         </div>
-        {/* <img
-          src={BG_IMAGE}
-          alt=""
-          className="absolut right-0 w-full h-full object-contain"
-        /> */}
+        
       </div>
 
       <div className="blog_content flex items-center justify-center mobile:flex-col lg:flex-row mobile:gap-y-[68px] xl:flex-row lg:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px] lg:px-[170px] min-h-[calc(100vh-783px)]">
@@ -115,6 +115,14 @@ export const Blog = () => {
               {isExpanded ? 'Daha az' : 'Davamını oxu'}
             </button>
           )}
+           {slug === "layihenin-terefdaslari" && (
+          <div className="flex items-center  justify-between mt-[32px]">
+            <img src={KOBLOGO} alt="" className="w-[60px] object-cover" />
+            <img src={koLOGO} alt="" className="w-[120px]  object-cover" />
+            <img src={mttmLOGO} alt="" className="w-[100px]  object-cover" />
+            <img src={PHLOGO} alt="" className="w-[100px]  object-cover" />
+          </div>
+        )}
           {blogData?.blogs[0]?.blog_link_url[language] && (
             <a
               href={blogData?.blogs[0]?.blog_link_url[language]}
@@ -145,6 +153,7 @@ export const Blog = () => {
           </div>
         </div>
       </div>
+     
     </div>
   );
 };

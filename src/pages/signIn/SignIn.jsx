@@ -7,10 +7,12 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 
 export const SignIn = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -50,10 +52,14 @@ export const SignIn = () => {
       }
       setLoading(false); // Stop loading on success
     } catch (error) {
+      let errorMsg = "Mail və ya şifrə yanlışdır";
+      // if (error.response && error.response.data) {
+      //   errorMsg = error.response.data.message || error.response.data.error || errorMsg;
+      // }
+      toast.error(errorMsg);
       setError(true);
       setLoading(false); // Stop loading on error
-      toast.error(error.response.data.message);
-      console.error('Login error:', error);
+      // console.error('Login error:', error);
     }
   };
 
@@ -123,20 +129,29 @@ export const SignIn = () => {
               }
               `}
           />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Parolunuz"
-            className={`w-full h-[48px] rounded-[16px] border border-[#7D7D7D] px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] mb-[8px] 
-              ${
-                error
-                ? "border-[#E94134]"
-                : "border-[#E7E7E7] focus:border-[#2E92A0]"
-              }
-              `}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Parolunuz"
+              className={`w-full h-[48px] rounded-[16px] border border-[#7D7D7D] px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] mb-[8px] 
+                ${
+                  error
+                  ? "border-[#E94134]"
+                  : "border-[#E7E7E7] focus:border-[#2E92A0]"
+                }
+                `}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-[43%] -translate-y-1/2 transform text-gray-500"
+            >
+              {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </button>
+          </div>
           <span 
             className="text-[14px] text-[#2A534F] cursor-pointer hover:underline mb-[32px]"
             onClick={() => navigate('/forgot-password')}
@@ -165,7 +180,7 @@ export const SignIn = () => {
                   console.error('Google Login Failed');
                 }}
                 width="100%"
-                className='w-full bg-red-500'
+                className='w-full'
               />
             </div>
           </div>
