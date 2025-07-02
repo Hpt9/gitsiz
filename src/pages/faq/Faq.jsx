@@ -58,7 +58,7 @@ export const Faq = () => {
           className="absolute right-0 bottom-0 mobile:h-[230px] lg:h-[700px]"
         /> */}
       </div>
-      <div className="flex mobile:justify-end w-full lg:min-h-[600px] mobile:flex-col-reverse lg:flex-row lg:items-center gap-x-[100px] px-[50px] mobile:px-[16px] mobile:py-[32px] lg:justify-center">
+      <div className="flex mobile:justify-end w-full h-[calc(100vh-812px)] lg:min-h-[600px] mobile:flex-col-reverse lg:flex-row lg:items-center gap-x-[100px] px-[50px] mobile:px-[16px] mobile:py-[32px] lg:justify-center">
         
         <div className="flex flex-col max-h-[270px] overflow-y-auto overflow-x-hidden custom-scrollbar pr-[16px]">
         {[...faqData].reverse().map((item, index) => (

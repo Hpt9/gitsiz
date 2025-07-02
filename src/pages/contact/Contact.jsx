@@ -150,7 +150,7 @@ export const Contact = () => {
           className="absolute right-0 bottom-0 mobilr:h-[112px] lg:h-[550px]"
         /> */}
       </div>
-      <div className="flex mobile:flex-col  gap-x-[100px] py-[100px] mobile:py-[32px] mobile:px-[16px] gap-y-[64px] justify-center items-center md:gap-y-[50px] lg:flex-row lg:px-[20px]">
+      <div className="flex mobile:flex-col h-[calc(100vh-783px)] min-h-[670px]  gap-x-[100px] py-[100px] mobile:py-[32px] mobile:px-[16px] gap-y-[64px] justify-center items-center md:gap-y-[50px] lg:flex-row lg:px-[20px]">
         <div className="mobile:w-full lg:w-[540px] flex flex-col justify-center">
           <h1 className="mobile:text-[24px] lg:text-[45px] font-bold text-[rgb(43,82,79)] mobile:mb-[34px] lg:mb-[68px]">
             {language === 'az' ? 'Bizimlə əlaqə saxlayın' : 
