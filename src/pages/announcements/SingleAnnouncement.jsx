@@ -237,13 +237,14 @@ export const SingleAnnouncement = () => {
             {/* Modal */}
             <AnimatePresence>
             {isModalOpen && (
-              <div className="fixed inset-0 z-[999999999999999999999999] flex items-center justify-center bg-black bg-opacity-60">
+              <div className="fixed inset-0 z-[999999999999999999999999] flex items-center justify-center bg-black bg-opacity-60" onClick={(e) => {e.stopPropagation(); setIsModalOpen(false);}}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
                   className="bg-white rounded-2xl p-6 w-full max-w-[500px] relative"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-[#2A534F]">Müraciət formu</h2>

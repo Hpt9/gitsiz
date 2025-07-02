@@ -55,7 +55,7 @@ export const HomePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-600px)]">
+      <div className="flex justify-center items-center h-[calc(100vh-200px)]">
         <span className="loader"></span>
       </div>
     ); // Optional: Add a loading state

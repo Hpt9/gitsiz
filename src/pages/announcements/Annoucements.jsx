@@ -42,7 +42,7 @@ export const Annoucements = () => {
   }, [filters.search]);
 
   useEffect(() => {
-    updatePageTitle("Announcements");
+    updatePageTitle("Elanlar");
     fetchData();
     fetchAnnouncements();
   }, []);
