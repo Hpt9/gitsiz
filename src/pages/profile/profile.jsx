@@ -128,7 +128,7 @@ export const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="w-full  ">
+    <div className="w-full  lg:h-[calc(100vh-492px)] lg:min-h-[1024px]">
       {/* Header */}
       <div className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
@@ -143,11 +143,20 @@ export const Profile = () => {
       </div>
 
       {/* Main Card Section */}
-      <div className="flex flex-col items-center w-full px-4 lg:px-0 mt-[60px]">
+      <div className="flex flex-col items-center justify-center w-full px-4 lg:px-0 my-[60px]">
         <div className="flex items-center w-full max-w-[1024px] xl:max-w-[1127px] justify-between mb-4">
-          <h2 className="text-xl lg:text-2xl font-semibold text-[#2A534F]">
-            Şəxsi məlumatlarım
-          </h2>
+          {!isEditing ? (
+            <h2 className="text-xl lg:text-2xl font-semibold text-[#2A534F]">
+              Şəxsi məlumatlarım
+            </h2>
+          ) : (
+            <div className="flex w-full items-center justify-center gap-2">
+              <h2 className="text-xl lg:text-2xl font-semibold text-[#2A534F]">
+              Redaktə
+              </h2>
+              
+            </div>
+          )}
           {!isEditing && (
             <button
               onClick={handleEdit}
@@ -157,12 +166,16 @@ export const Profile = () => {
             </button>
           )}
         </div>
-        <div className="w-full max-w-[1024px] xl:max-w-[1127px] bg-[rgba(255,255,255,0.5)] rounded-2xl flex flex-col lg:flex-row justify-between ">
+        <div 
+        style={{
+          justifyContent: isEditing ? "center" : "space-between",
+        }}
+        className="w-full max-w-[1024px] xl:max-w-[1127px] bg-[rgba(255,255,255,0.5)] rounded-2xl flex flex-col lg:flex-row justify-between ">
           {/* Personal Info */}
-          <div className=" min-w-[200px]">
+          <div className="min-w-[200px] flex">
             {/* Info or Edit Form */}
             {!isEditing ? (
-              <div className="">
+              <div className="w-full">
                 <div className="mt-[12px]">
                   <label className="flex w-fit text-gray-500 text-base font-normal mb-[-8px] ml-4 bg-white z-10 relative px-1 top-[4px] left-[4px]">
                     Ad, soyad
@@ -171,7 +184,7 @@ export const Profile = () => {
                     type="text"
                     value={profileData.fullName}
                     readOnly
-                    className="w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
+                    className="w-full sm:w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
                   />
                 </div>
                 <div className="mt-[12px]">
@@ -182,7 +195,7 @@ export const Profile = () => {
                     type="email"
                     value={profileData.email}
                     readOnly
-                    className="w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
+                    className="w-full sm:w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
                   />
                 </div>
                 <div className="mt-[12px]">
@@ -193,7 +206,7 @@ export const Profile = () => {
                     type="tel"
                     value={profileData.phone}
                     readOnly
-                    className="w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
+                    className="w-full sm:w-[371px] px-4 py-4 border-2 border-gray-400 rounded-[16px] h-[49px] text-xl font-semibold text-gray-800 focus:outline-none focus:border-[#2A534F] bg-white"
                   />
                 </div>
                 <button
@@ -208,7 +221,7 @@ export const Profile = () => {
               </div>
             ) : (
               <form
-                className="space-y-4"
+                className="space-y-4 w-[371px]"
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleEdit();
@@ -223,7 +236,7 @@ export const Profile = () => {
                     name="fullName"
                     value={profileData.fullName}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 rounded-md"
+                    className="w-full p-3 border border-[#7D7D7D] rounded-[16px]"
                     required
                   />
                 </div>
@@ -236,7 +249,7 @@ export const Profile = () => {
                     name="email"
                     value={profileData.email}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 rounded-md"
+                    className="w-full p-3 border border-[#7D7D7D] rounded-[16px]"
                     required
                   />
                 </div>
@@ -249,7 +262,7 @@ export const Profile = () => {
                     name="phone"
                     value={profileData.phone}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 rounded-md"
+                    className="w-full p-3 border border-[#7D7D7D] rounded-[16px]"
                   />
                 </div>
                 <div>
@@ -266,7 +279,7 @@ export const Profile = () => {
                         password: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-200 rounded-md"
+                    className="w-full p-3 border border-[#7D7D7D] rounded-[16px]"
                   />
                 </div>
                 <div>
@@ -283,20 +296,20 @@ export const Profile = () => {
                         password_confirmation: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-200 rounded-md"
+                    className="w-full p-3 border border-[#7D7D7D] rounded-[16px]"
                   />
                 </div>
                 <div className="flex gap-4 mt-4">
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="flex-1 border border-[#2A534F] text-[#2A534F] py-2 rounded-md font-semibold hover:bg-gray-50"
+                    className="flex-1 border border-[#000000] text-[#000000] py-2 rounded-md font-semibold hover:bg-black hover:text-white transition"
                   >
                     Ləğv et
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#977F2E] text-white py-2 rounded-md font-semibold hover:bg-[#7a6624]"
+                    className="flex-1 border border-[#967D2E] bg-[#967D2E] text-white py-2 rounded-md font-semibold hover:bg-white hover:text-[#967D2E] hover:border-[#967D2E] transition"
                   >
                     Yadda saxla
                   </button>
@@ -306,27 +319,27 @@ export const Profile = () => {
           </div>
           {/* Stats */}
           {!isEditing && (
-            <div className="flex flex-col gap-4 min-w-[220px]">
-              <div className="grid grid-cols-2 gap-4 pt-[26px] ">
-                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-[252px] h-[81.5px]">
+            <div className="flex flex-col w-full  sm:w-[517px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  pt-[26px] ">
+                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">5</div>
                   <div className="text-gray-600 text-sm mt-1">
                     Elanların sayı
                   </div>
                 </div>
-                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-[252px] h-[81.5px]">
+                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">1</div>
                   <div className="text-gray-600 text-sm mt-1">
                     Layih olunan elanlar
                   </div>
                 </div>
-                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-[252px] h-[81.5px]">
+                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">3240</div>
                   <div className="text-gray-600 text-sm mt-1">
                     Elanlara baxış sayı
                   </div>
                 </div>
-                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-[252px] h-[81.5px]">
+                <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">12</div>
                   <div className="text-gray-600 text-sm mt-1">
                     Müraciət sayı
@@ -339,6 +352,7 @@ export const Profile = () => {
       </div>
 
       {/* My Announcements */}
+      {!isEditing && (
       <div className="w-full lg:max-w-[1053px] xl:max-w-[1153px] mt-12 px-4 pb-12 mx-auto">
         <h2 className="text-2xl font-semibold text-[#2A534F] mb-6">
           Mənim elanlarım
@@ -379,6 +393,7 @@ export const Profile = () => {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };

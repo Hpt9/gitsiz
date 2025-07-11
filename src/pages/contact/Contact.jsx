@@ -129,7 +129,7 @@ export const Contact = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
+      <div className="flex justify-center items-center h-[calc(100vh-492px)] min-h-[1024px]">
         <span className="loader"></span>
       </div>
     );

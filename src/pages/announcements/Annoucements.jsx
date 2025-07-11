@@ -248,7 +248,7 @@ export const Annoucements = () => {
   // }
 
   return (
-    <div className="w-full min-h-[calc(100vh-492px)]">
+    <div className="w-full min-h-[calc(100vh-492px)] min-h-[1024px]">
       {/* Mobile Filter Menu */}
       <AnimatePresence>
         {isMobileFilterOpen && (
