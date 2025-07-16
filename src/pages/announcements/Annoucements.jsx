@@ -554,7 +554,8 @@ export const Annoucements = () => {
                   </button>
                   <button
                     onClick={() => navigate("/elan-yerlesdir")}
-                    className="h-[48px] px-4 rounded-[16px] border border-[#A0A0A0] text-[#2A534F] bg-white hover:bg-[#2A534F] hover:text-white transition-colors"
+                    className="h-[48px] px-4 rounded-[16px] border border-[#A0A0A0] hover:border-[#2A534F]  hover:text-[#2A534F] hover:bg-white
+                    bg-[#2A534F] text-white transition-colors"
                     type="button"
                   >
                     {language === "az"
@@ -582,9 +583,23 @@ export const Annoucements = () => {
             {/* Grid of Announcements */}
             <div className="w-full grid mobile:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[24px] mt-[40px]">
               {loading ? (
-                <div className="col-span-full flex justify-center items-center py-16">
-                  <span className="loader"></span>
-                </div>
+                <>
+                {[...Array(3)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-[16px] border border-[#A0A0A0] overflow-hidden shadow-sm animate-pulse"
+                  >
+                    <div className="aspect-[4/3] bg-[#e0e0e0] relative flex items-end">
+                      <div className="absolute bottom-4 left-4 w-2/3 h-6 bg-[#cccccc] rounded"></div>
+                    </div>
+                    <div className="p-4">
+                      <div className="h-4 w-1/2 bg-[#e0e0e0] rounded mb-2"></div>
+                      <div className="h-3 w-1/3 bg-[#e0e0e0] rounded mb-2"></div>
+                      <div className="h-3 w-1/4 bg-[#e0e0e0] rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </>
               ) : !loading && announcements.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center py-20">
                   <svg

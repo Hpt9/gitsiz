@@ -133,6 +133,7 @@ export const PlaceAnnoucement = () => {
     images: []
   });
   const [fieldErrors, setFieldErrors] = useState({});
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     updatePageTitle("Place Annoucement");
@@ -253,29 +254,37 @@ export const PlaceAnnoucement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitLoading) return; // Prevent double submit
+    setSubmitLoading(true);
     // Client-side validation
     if (!formData.name.trim()) {
         toast.error("Başlıq boş ola bilməz");
+        setSubmitLoading(false);
         return;
     }
     if (!formData.text.trim()) {
         toast.error("Mətn boş ola bilməz");
+        setSubmitLoading(false);
         return;
     }
     if (formData.cluster_id <= 0) {
         toast.error("Klaster seçilməyib");
+        setSubmitLoading(false);
         return;
     }
     if (formData.zones.length === 0) {
         toast.error("Zonalar seçilməyib");
+        setSubmitLoading(false);
         return;
     }
     if (formData.cover_photo === null) {
         toast.error("Örtük şəkli yüklənməyib");
+        setSubmitLoading(false);
         return;
     }
     if (formData.images.length === 0) {
         toast.error("Əlavə şəkillər yüklənməyib");
+        setSubmitLoading(false);
         return;
     }
     try {
@@ -304,15 +313,15 @@ export const PlaceAnnoucement = () => {
         },
       });
       if (response.data) {
-        toast.success(
+        toast.warning(
           language === "az"
-            ? "Elan uğurla yerləşdirildi!"
+            ? "Elanınız qeyd olundu. Təsdiq alındıqdan sonra yerləşdiriləcək."
             : language === "en"
-            ? "Announcement placed successfully!"
-            : "Объявление успешно размещено!",
+            ? "Your announcement has been recorded. It will be placed after approval."
+            : "Ваше объявление записано. Оно будет размещено после утверждения.",
           { position: "top-right", autoClose: 3000 }
         );
-        setTimeout(() => navigate('/elanlar'), 1000);
+        setTimeout(() => navigate('/elanlar'), 3000);
       }
     } catch (error) {
       if (error.response && error.response.status === 422) {
@@ -322,6 +331,8 @@ export const PlaceAnnoucement = () => {
         toast.error('Elan yerləşdirilərkən xəta baş verdi!');
       }
       console.error('Error creating announcement:', error);
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -510,9 +521,19 @@ export const PlaceAnnoucement = () => {
         </form>
         <button
           onClick={handleSubmit}
-          className="mobile:w-full lg:w-[800px] h-[48px] bg-[#967D2E] text-white font-bold rounded-[16px] hover:bg-[#876f29] transition-colors mt-[16px]"
+          className="mobile:w-full lg:w-[800px] h-[48px] bg-[#967D2E] text-white font-bold rounded-[16px] hover:bg-[#876f29] transition-colors mt-[16px] flex items-center justify-center"
+          disabled={submitLoading}
         >
-          {language === "az" ? "Tamamla" : language === "en" ? "Complete" : "Завершить"}
+          {submitLoading ? (
+            <span className="flex items-center justify-center">
+              <span className="loader2 w-[20px] h-[20px]"></span>
+              <span className="ml-[8px]">
+                {language === "az" ? "Yerləşdirilir..." : language === "en" ? "Submitting..." : "Отправка..."}
+              </span>
+            </span>
+          ) : (
+            language === "az" ? "Tamamla" : language === "en" ? "Complete" : "Завершить"
+          )}
         </button>
       </div>
     </div>
