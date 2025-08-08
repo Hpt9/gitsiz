@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { updatePageTitle } from "../../utils/updatePageTitle";
 import { settingsCache } from '../../utils/settingsCache';
 import useLanguageStore from "../../store/languageStore";
+import { motion } from "framer-motion";
+
 export const Contact = () => {
   const { language } = useLanguageStore();
   useEffect(() => {
@@ -136,9 +138,20 @@ export const Contact = () => {
   }
   // const { language } = useLanguageStore();
   return (
-    <div className="w-full">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
       <ToastContainer />
-      <div className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative">
+      <motion.div 
+        className="blog_header w-full mobile:px-[16px] mobile:pb-[42px] mobile:pt-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
           {language === 'az' ? 'Əlaqə' : language === 'en' ? 'Contact' : 'Контакты'}
@@ -149,7 +162,7 @@ export const Contact = () => {
           alt=""
           className="absolute right-0 bottom-0 mobilr:h-[112px] lg:h-[550px]"
         /> */}
-      </div>
+      </motion.div>
       <div className="flex mobile:flex-col h-[calc(100vh-783px)] min-h-[670px]  gap-x-[100px] py-[100px] mobile:py-[32px] mobile:px-[16px] gap-y-[64px] justify-center items-center md:gap-y-[50px] lg:flex-row lg:px-[20px]">
         <div className="mobile:w-full lg:w-[540px] flex flex-col justify-center">
           <h1 className="mobile:text-[24px] lg:text-[45px] font-bold text-[rgb(43,82,79)] mobile:mb-[34px] lg:mb-[68px]">
@@ -376,6 +389,6 @@ export const Contact = () => {
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };

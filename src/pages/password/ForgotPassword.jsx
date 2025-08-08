@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { motion } from "framer-motion";
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -11,11 +12,13 @@ export const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       await axios.post('https://kobklaster.tw1.ru/api/forgot-password', { email });
-      toast.success('Şifrə bərpası üçün təlimatlar e-poçt ünvanınıza göndərildi.');
+      toast.success('Şifrə bərpa linki email ünvanınıza göndərildi');
       navigate('/daxil-ol');
     } catch (error) {
+      console.error('Forgot password error:', error);
       toast.error('Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
     } finally {
       setLoading(false);
@@ -23,8 +26,19 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
-      <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <motion.div 
+        className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <h1 className="text-left text-[24px] font-bold text-[#2A534F]">
           Şifrəni bərpa et
         </h1>
@@ -48,7 +62,7 @@ export const ForgotPassword = () => {
             {loading ? 'Göndərilir...' : 'Göndər'}
           </button>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }; 

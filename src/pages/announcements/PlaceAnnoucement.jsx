@@ -8,6 +8,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import PropTypes from "prop-types";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion } from "framer-motion";
 
 export const CustomSelect = ({ value, onChange, options, placeholder, className = "", isMulti = false, openDirection = "down" }) => {
   
@@ -345,9 +346,20 @@ export const PlaceAnnoucement = () => {
   }
 
   return (
-    <div className="w-full min-h-[calc(100vh-492px)]">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
       <ToastContainer />
-      <div className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
+      <motion.div 
+        className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[700px]">
           {language === "az"
             ? "Elanın məlumatlarını daxil edin"
@@ -355,7 +367,7 @@ export const PlaceAnnoucement = () => {
             ? "Enter Announcement Details"
             : "Введите детали объявления"}
         </h1>
-      </div>
+      </motion.div>
       <div className="w-full flex flex-col items-center justify-center py-[32px] px-[16px]">
         <form
           onSubmit={handleSubmit}
@@ -536,6 +548,6 @@ export const PlaceAnnoucement = () => {
           )}
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };

@@ -438,12 +438,12 @@ export const Navbar = () => {
                           </svg>
                         </button>
                       </div>
-                      <button
+                      {/* <button
                         onClick={handleLogout}
                         className="h-[48px] bg-red-600 text-white font-bold rounded-[12px] flex items-center justify-center hover:bg-red-700 transition-colors mt-2"
                       >
                         Çıxış
-                      </button>
+                      </button> */}
                     </div>
                   ) : (
                     <>

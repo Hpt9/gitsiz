@@ -6,6 +6,7 @@ import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { ImSpinner8 } from "react-icons/im";
 import useLanguageStore from "../../store/languageStore";
 import useUserStore from "../../store/userStore";
+import { motion } from "framer-motion";
 
 export const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -131,10 +132,21 @@ export const VerifyEmail = () => {
   };
 
   return (
-    <div className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex items-center justify-center bg-gray-50">
-      <div className="p-8 bg-white rounded-lg shadow-lg">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex items-center justify-center bg-gray-50"
+    >
+      <motion.div 
+        className="p-8 bg-white rounded-lg shadow-lg"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         {renderStatus()}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

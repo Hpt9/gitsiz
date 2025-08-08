@@ -317,9 +317,20 @@ export const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="w-full  ">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
       {/* Header */}
-      <div className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
+      <motion.div 
+        className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
           <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[500px]">
             {language === "az"
@@ -329,7 +340,7 @@ export const Profile = () => {
               : "Профиль"}
           </h1>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Card Section */}
       <div className="flex flex-col items-center justify-center w-full px-4 lg:px-0 my-[60px] ">
@@ -513,13 +524,13 @@ export const Profile = () => {
                 <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">5</div>
                   <div className="text-gray-600 text-sm mt-1">
-                    Elanların sayı
+                    Bütün elanların sayı
                   </div>
                 </div>
                 <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
                   <div className="text-2xl font-bold text-[#2A534F]">1</div>
                   <div className="text-gray-600 text-sm mt-1">
-                    Layih olunan elanlar
+                     Aktiv elanların sayı
                   </div>
                 </div>
                 <div className="border border-[#7D7D7D] rounded-[16px] p-4 flex flex-row-reverse justify-between items-center w-full sm:w-[252px] h-[81.5px]">
@@ -542,7 +553,7 @@ export const Profile = () => {
 
       {/* My Announcements */}
       {!isEditing && (
-      <div className="mt-8 w-full max-w-[1920px] mx-auto">
+      <div className="mt-8 w-full max-w-[1920px] mx-auto px-4 lg:px-0">
       <h2 className="text-xl font-semibold text-[#2A534F] mb-4 max-w-[1127px] mx-auto">
         Elanlarım
       </h2>
@@ -841,6 +852,6 @@ export const Profile = () => {
           </div>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };

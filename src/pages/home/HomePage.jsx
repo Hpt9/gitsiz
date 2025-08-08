@@ -7,6 +7,7 @@ import { img_url } from "../../components/expoted_images";
 import { useNavigate, useLocation } from "react-router-dom";
 import { updatePageTitle } from "../../utils/updatePageTitle";
 import { Modal } from "../../components/ui/Modal";
+import { motion } from "framer-motion";
 
 export const HomePage = () => {
   useEffect(() => {
@@ -62,7 +63,13 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className=""
+    >
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -89,38 +96,79 @@ export const HomePage = () => {
           </button>
         </div>
       </Modal>
-      <div className="home_header relative mobile:h-fit mobile:pt-[0px] mobile:pb-[32px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)]">
+      <motion.div
+        className="home_header relative mobile:h-fit mobile:pt-[0px] mobile:pb-[32px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)]"
+        initial={{ y: -40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7}}
+      >
         {/* <img
           src={BG_IMAGE}
           alt=""
           className="absolute right-0 bottom-0 mobile:h-[307px] lg:h-[1024px]"
         /> */}
-        <div className="flex flex-col items-start justify-between w-full max-w-[1920px] mx-auto">
-          <h1 className="mobile:w-[224px] lg:w-[500px] text-white mobile:text-[32px] lg:text-[61px] font-bold lg:leading-[65px]">
+        <motion.div
+          className="flex flex-col items-start justify-between w-full max-w-[1920px] mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+        >
+          <motion.h1
+            className="mobile:w-[224px] lg:w-[500px] text-white mobile:text-[32px] lg:text-[61px] font-bold lg:leading-[65px]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+          >
             {homeData.title[language]}
-          </h1>
-          <div
+          </motion.h1>
+          <motion.div
             className="mt-[10px] mb-[20px] mobile:w-fit md:w-[516px] text-[rgba(210,210,210,1)] mobile:text-[14px] lg:text-[20px] font-normal"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.8 }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(homeData.description[language]),
             }}
           />
-          <div className="flex gap-x-[8px] relative z-10">
+          <motion.div
+            className="flex gap-x-[8px] relative z-10"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.15,
+                },
+              },
+            }}
+          >
             {homeData.buttons.map((button, index) => (
-              <button
+              <motion.button
                 key={index}
                 onClick={() =>
                   handleButtonClick(button.url[language] || button.url.az)
                 }
                 className="rounded-[12px] bg-[rgb(150,125,46)] border-2 border-[rgb(150,125,46)] mobile:w-[50%] md:w-fit text-white text-[14px] font-medium mobile:px-[2px] md:px-[28px] py-[8px] transition-all duration-300 hover:bg-white hover:text-[rgb(150,125,46)]"
+                whileHover={{ scale: 1.07, boxShadow: "0 4px 16px rgba(150,125,46,0.15)" }}
+                whileTap={{ scale: 0.96 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
               >
                 {button.text[language] || button.text.az}
-              </button>
+              </motion.button>
             ))}
-          </div>
-        </div>
-      </div>
-      <div className="home_info items-center  w-full mobile:gap-y-[64px] lg:gap-y-[175px] 2xl:gap-y-[50px] mobile:px-[16px] lg:px-[100px] 2xl:px-[175px] mobile:py-[32px] lg:py-[150px] 2xl:py-[200px] flex flex-col ">
+          </motion.div>
+        </motion.div>
+      </motion.div>
+      {/* Animate the info section */}
+      <motion.div
+        className="home_info items-center  w-full mobile:gap-y-[64px] lg:gap-y-[175px] 2xl:gap-y-[50px] mobile:px-[16px] lg:px-[100px] 2xl:px-[175px] mobile:py-[32px] lg:py-[150px] 2xl:py-[200px] flex flex-col "
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 1.2 }}
+      >
         <div className="mobile:h-fit lg:h-[450px] w-full 2xl:w-fit flex items-center gap-x-[45px]  mobile:flex-col lg:gap-y-[130px] 2xl:flex-row">
           <div>
             <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[60px] mobile:w-full tablet:w-fit">
@@ -325,7 +373,7 @@ export const HomePage = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

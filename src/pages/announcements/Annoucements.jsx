@@ -248,7 +248,7 @@ export const Annoucements = () => {
   // }
 
   return (
-    <div className="w-full min-h-[calc(100vh-492px)] min-h-[1024px]">
+    <div className="w-full min-h-[calc(100vh-492px)]">
       {/* Mobile Filter Menu */}
       <AnimatePresence>
         {isMobileFilterOpen && (
@@ -392,7 +392,12 @@ export const Annoucements = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
+      <motion.div 
+        className="announcements_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
           <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[500px]">
             {language === "az"
@@ -402,7 +407,7 @@ export const Annoucements = () => {
               : "Объявления"}
           </h1>
         </div>
-      </div>
+      </motion.div>
 
       <div className="announcements_container w-full flex flex-col items-center justify-center py-[32px] mobile:px-[16px] lg:px-[50px] xl:px-[100px]">
         {/* Mobile Filter Button */}

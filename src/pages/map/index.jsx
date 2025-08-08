@@ -63,7 +63,13 @@ export const MapPage = () => {
   }, [element, allData]);
 
   return (
-    <div className="w-full">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
       <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[102px] bg-[rgb(42,83,79)] relative">
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] leading-[39px] lg:text-[61px] font-bold text-[rgb(255,255,255)]">
@@ -123,6 +129,6 @@ export const MapPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

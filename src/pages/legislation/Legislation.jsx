@@ -7,6 +7,7 @@ import useLanguageStore from "../../store/languageStore";
 import { img_url } from "../../components/expoted_images";
 import { updatePageTitle } from '../../utils/updatePageTitle';
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const Legislation = () => {
   useEffect(() => {
@@ -55,8 +56,19 @@ export const Legislation = () => {
   };
 
   return (
-    <div className="w-full">
-      <div className="blog_header mobile:h-fit mobile:pb-[64px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] mobile:pt-[0px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)] relative">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
+      <motion.div
+        className="blog_header mobile:h-fit mobile:pb-[64px] lg:pt-[140px] lg:pb-[195px] w-full mobile:px-[16px] mobile:pt-[0px] lg:px-[50px] xl:px-[100px] bg-[rgb(42,83,79)] relative"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="flex flex-col items-start justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] lg:text-[61px] font-bold text-[rgb(255,255,255)] relative z-[2]">
           {legislationData.title[language]}
@@ -81,7 +93,7 @@ export const Legislation = () => {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
       <div className="legislation_body flex flex-col">
         <div className="flex items-center justify-center mobile:flex-col mobile:gap-y-[64px] xl:flex-row xl:gap-x-[100px] 2xl:gap-x-[300px] mobile:py-[32px] lg:py-[112px] w-full bg-[rgb(255,255,255)] mobile:px-[16px]">
           <div className="flex flex-col mobile:gap-y-[8px] lg:gap-y-[60px] mobile:w-full tablet:w-[540px]">
@@ -127,13 +139,13 @@ export const Legislation = () => {
                 className="flex flex-col items-center mobile:gap-y-[8px] lg:gap-y-[33px] relative mobile:w-[177px] lg:w-[200px]"
               >
                 <div className="w-[56px] h-[56px] relative">
-                  <img 
-                    src={`${img_url}${document.image}`} 
-                    alt="" 
-                    className="w-[48px]" 
+                  <img
+                    src={`${img_url}${document.image}`}
+                    alt=""
+                    className="w-[48px]"
                   />
                   {document.document_link && (
-                    <a 
+                    <a
                       href={document.document_link}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -148,7 +160,7 @@ export const Legislation = () => {
                     </div>
                   )}
                 </div>
-                <p 
+                <p
                   className="mobile:text-[14px] leading-5 lg:text-[20px] text-center mobile:w-[170px] lg:w-[220px]"
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(document.text[language] || document.text['az'])
@@ -195,7 +207,7 @@ export const Legislation = () => {
                     {formatNumber(index + 1)}
                   </p>
                 </div>
-                <p 
+                <p
                   className="mobile:text-[14px] tablet:text-[20px] text-[rgb(43,82,79)] mobile:w-full lg:w-[450px]"
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(item.text[language] || item.text['az'])
@@ -206,6 +218,6 @@ export const Legislation = () => {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

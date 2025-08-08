@@ -6,6 +6,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
+import { motion } from "framer-motion";
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -31,98 +32,43 @@ export const SignUp = () => {
 
   // Function to format phone number
   const formatPhoneNumber = (value) => {
-    // Remove all non-digit characters
-    const number = value.replace(/\D/g, "");
-
-    // Return empty if no input
-    if (number.length === 0) return "";
-
-    // Start building the formatted number
-    let formatted = "+";
-
-    // Add the country code
-    if (number.length >= 3) {
-      formatted += number.slice(0, 3);
-      if (number.length > 3) formatted += "-";
+    // Remove all non-digits
+    const phoneNumber = value.replace(/\D/g, '');
+    
+    // Format as +994 XX XXX XX XX
+    if (phoneNumber.length <= 3) {
+      return `+${phoneNumber}`;
+    } else if (phoneNumber.length <= 5) {
+      return `+${phoneNumber.slice(0, 3)} ${phoneNumber.slice(3)}`;
+    } else if (phoneNumber.length <= 8) {
+      return `+${phoneNumber.slice(0, 3)} ${phoneNumber.slice(3, 5)} ${phoneNumber.slice(5)}`;
+    } else if (phoneNumber.length <= 10) {
+      return `+${phoneNumber.slice(0, 3)} ${phoneNumber.slice(3, 5)} ${phoneNumber.slice(5, 8)} ${phoneNumber.slice(8)}`;
     } else {
-      return formatted + number;
+      return `+${phoneNumber.slice(0, 3)} ${phoneNumber.slice(3, 5)} ${phoneNumber.slice(5, 8)} ${phoneNumber.slice(8, 10)} ${phoneNumber.slice(10)}`;
     }
-
-    // Add the operator code
-    if (number.length >= 5) {
-      formatted += number.slice(3, 5);
-      if (number.length > 5) formatted += "-";
-    } else {
-      return formatted + number.slice(3);
-    }
-
-    // Add the first part of subscriber number
-    if (number.length >= 8) {
-      formatted += number.slice(5, 8);
-      if (number.length > 8) formatted += "-";
-    } else {
-      return formatted + number.slice(5);
-    }
-
-    // Add the second part
-    if (number.length >= 10) {
-      formatted += number.slice(8, 10);
-      if (number.length > 10) formatted += "-";
-    } else {
-      return formatted + number.slice(8);
-    }
-
-    // Add the last part
-    if (number.length >= 12) {
-      formatted += number.slice(10, 12);
-    } else {
-      return formatted + number.slice(10);
-    }
-
-    return formatted;
-  };
-
-  const handlePhoneChange = (e) => {
-    const input = e.target;
-    let { value } = e.target;
-    const prevValue = formData.phone;
-
-    // If user is deleting and the field is about to be empty
-    if (prevValue.length > value.length && value.length === 4) { // Handles deleting back to "+994"
-        setFormData(prev => ({ ...prev, phone: "" }));
-        return;
-    }
-
-    const formattedPhone = formatPhoneNumber(value);
-
-    setFormData(prev => ({ ...prev, phone: formattedPhone }));
-      
-    // Set cursor position to the end after the update
-    setTimeout(() => {
-        input.setSelectionRange(formattedPhone.length, formattedPhone.length);
-    }, 0);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Special handling for phone field
     if (name === 'phone') {
-        handlePhoneChange(e);
+      const formattedPhone = formatPhoneNumber(value);
+      setFormData(prev => ({ ...prev, [name]: formattedPhone }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
-    
-    setFieldErrors(prev => ({ ...prev, [name]: undefined }));
 
-    // Live check for password match
-    if (name === "password" || name === "password_confirmation") {
-      const newPassword = name === "password" ? value : formData.password;
-      const newConfirmation = name === "password_confirmation" ? value : formData.password_confirmation;
-      setPasswordsMatch(newPassword === newConfirmation);
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }));
+    }
+
+    // Check password match
+    if (name === 'password' || name === 'password_confirmation') {
+      const password = name === 'password' ? value : formData.password;
+      const confirmation = name === 'password_confirmation' ? value : formData.password_confirmation;
+      setPasswordsMatch(password === confirmation);
     }
   };
 
@@ -130,71 +76,86 @@ export const SignUp = () => {
     e.preventDefault();
     setLoading(true);
 
-    const submissionData = {
-      ...formData,
-      phone: formData.phone.replace(/\D/g, ''),
-    };
+    // Validation
+    const errors = {};
+    if (!formData.name.trim()) errors.name = 'Ad tələb olunur';
+    if (!formData.phone.trim()) errors.phone = 'Telefon nömrəsi tələb olunur';
+    if (!formData.email.trim()) errors.email = 'Email tələb olunur';
+    if (!formData.password) errors.password = 'Şifrə tələb olunur';
+    if (formData.password !== formData.password_confirmation) {
+      errors.password_confirmation = 'Şifrələr uyğun gəlmir';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await axios.post('https://kobklaster.tw1.ru/api/register', submissionData);
-      const token = response.data.token;
-      if (token) {
-        useUserStore.getState().setToken(token);
+      const response = await axios.post('https://kobklaster.tw1.ru/api/register', formData);
+      
+      if (response.data.token) {
+        useUserStore.getState().setToken(response.data.token);
         await fetchUserProfile();
-        navigate('/', { state: { fromRegistration: true } }); // Redirect and signal for modal
+        navigate('/', { state: { fromRegistration: true } });
+        toast.success('Qeydiyyat uğurla tamamlandı!');
       }
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        setFieldErrors(error.response.data);
+      console.error('Registration error:', error);
+      if (error.response?.data?.errors) {
+        const serverErrors = {};
+        Object.keys(error.response.data.errors).forEach(key => {
+          serverErrors[key] = error.response.data.errors[key][0];
+        });
+        setFieldErrors(serverErrors);
       } else {
-        setFieldErrors({});
-        toast.error('Qeydiyyat zamanı xəta baş verdi!');
+        toast.error('Qeydiyyat zamanı xəta baş verdi');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const token = credentialResponse.credential;
-    const decoded = jwtDecode(token);
-    axios
-      .post("https://kobklaster.tw1.ru/api/auth/google", {
-        name: decoded.given_name,
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      
+      const response = await axios.post('https://kobklaster.tw1.ru/api/google-register', {
         email: decoded.email,
-        surname: decoded.family_name,
-        google_id: decoded.sub,
-      })
-      .then((res) => {
-        if (res.data.token) {
-          useUserStore.getState().setToken(res.data.token);
-          fetchUserProfile().then(() => navigate('/', { state: { fromRegistration: true } }));
-        }
-      })
-      .catch((err) => {
-        if (
-          err.response &&
-          err.response.data &&
-          err.response.data.token &&
-          err.response.data.user
-        ) {
-          if (err.response.data.need_phone) {
-            toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
-          }
-          useUserStore.getState().setToken(err.response.data.token);
-          fetchUserProfile().then(() => navigate('/', { state: { fromRegistration: true } }));
-        } else {
-          toast.error('Xəta baş verdi');
-        }
+        name: decoded.name,
+        google_id: decoded.sub
       });
+
+      if (response.data.token) {
+        useUserStore.getState().setToken(response.data.token);
+        await fetchUserProfile();
+        navigate('/', { state: { fromRegistration: true } });
+        toast.success('Qeydiyyat uğurla tamamlandı!');
+      }
+    } catch (error) {
+      console.error('Google registration error:', error);
+      toast.error('Google ilə qeydiyyat xətası');
+    }
   };
 
   // Shared border color for password fields
   const passwordBorder = !passwordsMatch && formData.password_confirmation ? 'border-red-500' : 'border-[#7D7D7D]';
 
   return (
-    <div className="w-full  flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
-      <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <motion.div 
+        className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <h1 className="text-left text-[20px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin
         </h1>
@@ -208,7 +169,7 @@ export const SignUp = () => {
             className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.name ? 'border-red-500' : 'border-[#7D7D7D]'}`}
           />
           {fieldErrors.name && (
-            <div className="text-red-500 text-xs mt-1">{fieldErrors.name[0]}</div>
+            <div className="text-red-500 text-xs mt-1">{fieldErrors.name}</div>
           )}
           <input
             type="text"
@@ -219,7 +180,7 @@ export const SignUp = () => {
             className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.phone ? 'border-red-500' : 'border-[#7D7D7D]'}`}
           />
           {fieldErrors.phone && (
-            <div className="text-red-500 text-xs mt-1">{fieldErrors.phone[0]}</div>
+            <div className="text-red-500 text-xs mt-1">{fieldErrors.phone}</div>
           )}
           <input
             type="email"
@@ -230,7 +191,7 @@ export const SignUp = () => {
             className={`w-full h-[48px] rounded-[16px] border px-[16px] outline-none focus:border-[#2A534F] placeholder:text-[14px] placeholder:text-[#7D7D7D] ${fieldErrors.email ? 'border-red-500' : 'border-[#7D7D7D]'}`}
           />
           {fieldErrors.email && (
-            <div className="text-red-500 text-xs mt-1">{fieldErrors.email[0]}</div>
+            <div className="text-red-500 text-xs mt-1">{fieldErrors.email}</div>
           )}
           <div className="relative">
             <input
@@ -250,7 +211,7 @@ export const SignUp = () => {
             </button>
           </div>
           {fieldErrors.password && (
-            <div className="text-red-500 text-xs mt-1">{fieldErrors.password[0]}</div>
+            <div className="text-red-500 text-xs mt-1">{fieldErrors.password}</div>
           )}
           <div className="relative">
             <input
@@ -298,7 +259,7 @@ export const SignUp = () => {
             </div>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import useLanguageStore from '../../store/languageStore';
 import '../../index.css'
 import { updatePageTitle } from '../../utils/updatePageTitle';
+import { motion } from "framer-motion";
 
 export const Faq = () => {
   useEffect(() => {
@@ -44,8 +45,19 @@ export const Faq = () => {
     return null; // Will redirect to 404 before rendering
   }
   return (
-    <div className="w-full">
-      <div className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
+      <motion.div 
+        className="blog_header w-full mobile:pt-[16px] mobile:pb-[64px] mobile:px-[16px] lg:px-[50px] xl:px-[100px] lg:py-[100px] bg-[rgb(42,83,79)] relative faq_header"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
 
         <div className="flex items-center justify-between w-full max-w-[1920px] mx-auto">
         <h1 className="mobile:text-[32px] mobile:leading-[39px] lg:leading-[60px] lg:text-[61px] font-bold  text-[rgb(255,255,255)] mobile:w-[224px] lg:w-[500px]">
@@ -57,7 +69,7 @@ export const Faq = () => {
           alt=""
           className="absolute right-0 bottom-0 mobile:h-[230px] lg:h-[700px]"
         /> */}
-      </div>
+      </motion.div>
       <div className="flex mobile:justify-end w-full h-[calc(100vh-812px)] lg:min-h-[600px] mobile:flex-col-reverse lg:flex-row lg:items-center gap-x-[100px] px-[50px] mobile:px-[16px] mobile:py-[32px] lg:justify-center">
         
         <div className="flex flex-col max-h-[270px] overflow-y-auto overflow-x-hidden custom-scrollbar pr-[16px]">
@@ -79,6 +91,6 @@ export const Faq = () => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

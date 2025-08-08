@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
+import { motion } from "framer-motion";
 
 export const SignIn = () => {
   const [error, setError] = useState(false);
@@ -36,80 +37,64 @@ export const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError(false);
-    setLoading(true); // Start loading
+
     try {
       const response = await axios.post('https://kobklaster.tw1.ru/api/login', formData);
-      // console.log(response);
-      const token = response.data.token;
-      if (token) {
-        useUserStore.getState().setToken(token);
+      
+      if (response.data.token) {
+        useUserStore.getState().setToken(response.data.token);
         await fetchUserProfile();
-        if (!response.data.phone) {
-          toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
-        }
-        navigate('/'); // Redirect to home or dashboard
+        navigate('/');
+        toast.success('Uğurla daxil oldunuz!');
       }
-      setLoading(false); // Stop loading on success
     } catch (error) {
-      let errorMsg = "Mail və ya şifrə yanlışdır";
-      // if (error.response && error.response.data) {
-      //   errorMsg = error.response.data.message || error.response.data.error || errorMsg;
-      // }
-      toast.error(errorMsg);
+      console.error('Login error:', error);
       setError(true);
-      setLoading(false); // Stop loading on error
-      // console.error('Login error:', error);
+      toast.error('Email və ya şifrə yanlışdır');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const token = credentialResponse.credential;
-    const decoded = jwtDecode(token);
-    axios
-      .post("https://kobklaster.tw1.ru/api/auth/google", {
-        name: decoded.given_name,
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      
+      const response = await axios.post('https://kobklaster.tw1.ru/api/google-login', {
         email: decoded.email,
-        surname: decoded.family_name,
-        google_id: decoded.sub,
-      })
-      .then((res) => {
-        if (res.data.token) {
-          useUserStore.getState().setToken(res.data.token);
-          fetchUserProfile().then(() => {
-            if (!res.data.user?.phone) {
-              toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
-            }
-            navigate('/');
-          });
-        }
-      })
-      .catch((err) => {
-        if (
-          err.response &&
-          err.response.data &&
-          err.response.data.token &&
-          err.response.data.user
-        ) {
-          if (err.response.data.need_phone) {
-            toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
-          }
-          useUserStore.getState().setToken(err.response.data.token);
-          fetchUserProfile().then(() => {
-            if (!err.response.data.user?.phone) {
-              toast.warn('Telefon nömrəsi tələb olunur, zəhmət olmasa telefon nömrənizi daxil edin.');
-            }
-            navigate('/');
-          });
-        } else {
-          toast.error('Xəta baş verdi');
-        }
+        name: decoded.name,
+        google_id: decoded.sub
       });
+
+      if (response.data.token) {
+        useUserStore.getState().setToken(response.data.token);
+        await fetchUserProfile();
+        navigate('/');
+        toast.success('Uğurla daxil oldunuz!');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Google ilə daxil olma xətası');
+    }
   };
 
   return (
-    <div className="w-full  flex justify-center items-center py-[32px] mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)]">
-      <div className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]">
+    <motion.div
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      
+      className="mobile:min-h-[calc(100vh-600px)] lg:min-h-[calc(100vh-448px)] xl:min-h-[calc(100vh-492px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <motion.div 
+        className="mobile:w-[90%] sm:w-[400px] flex flex-col gap-y-[24px]"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <h1 className="text-left text-[24px] font-bold text-[#2A534F]">
           Məlumatlarınızı daxil edin
         </h1>
@@ -185,7 +170,7 @@ export const SignIn = () => {
             </div>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
